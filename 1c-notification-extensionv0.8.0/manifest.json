@@ -1,0 +1,61 @@
+{
+  "manifest_version": 3,
+  "name": "1C Заявки - Монитор",
+  "version": "0.8.5",
+  "description": "Оповещает о новых заявках в веб-версии 1С с настраиваемыми звуками, голосом и MAX уведомлениями. Автоматически перезапускает мониторинг при его отключении.",
+  "permissions": [
+    "notifications",
+    "storage",
+    "activeTab",
+    "tabs",
+    "alarms",
+    "proxy"
+  ],
+  "host_permissions": [
+    "https://2phoenix.alidi.ru/*",
+    "https://platform-api.max.ru/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://2phoenix.alidi.ru/*"],
+        "js": [
+          "config.js",
+          "logger.js",
+          "shared/constants.js",
+          "utils.js",
+          "content.js",
+          "max.js"
+        ],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "1C Монитор заявок"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "toggle-monitor": {
+      "suggested_key": { "default": "Ctrl+Shift+M" },
+      "description": "Вкл/выкл мониторинг"
+    },
+    "refresh-count": {
+      "suggested_key": { "default": "Ctrl+Shift+R" },
+      "description": "Обновить счётчик"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/icon48.png", "icons/icon128.png"],
+      "matches": ["https://2phoenix.alidi.ru/*"]
+    }
+  ]
+}
