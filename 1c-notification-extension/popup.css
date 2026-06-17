@@ -1,0 +1,2762 @@
+html, body {
+       width: 380px;
+    display: flex;
+    flex-direction: column;
+    height: auto;          
+    min-height: 250px !important;
+    max-height: 400px !important;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    /* Light Minimalist palette */
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: rgba(37, 99, 235, 0.1);
+    --primary-lighter: rgba(37, 99, 235, 0.05);
+    
+    --secondary: #6366f1;
+    --secondary-dark: #4f46e5;
+    --secondary-light: rgba(99, 102, 241, 0.1);
+    
+    --success: #2563eb;
+    --success-light: rgba(37, 99, 235, 0.1);
+    --danger: #ef4444;
+    --danger-light: rgba(239, 68, 68, 0.1);
+    --warning: #f59e0b;
+    --warning-light: rgba(245, 158, 11, 0.1);
+    --info: #2563eb;
+    --info-light: rgba(37, 99, 235, 0.1);
+    
+    --text-dark: #1e293b;
+    --text-gray: #475569;
+    --text-light: #64748b;
+    --text-lighter: #94a3b8;
+    --text-muted: #cbd5e1;
+    
+    --background-light: #f7f9fc;
+    --background-white: #ffffff;
+    --background-subtle: #f1f5f9;
+    --border-color: #e2e8f0;
+    --border-light: #f1f5f9;
+    
+    --border-radius: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 16px;
+    --box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --box-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+    --box-shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.08);
+    --box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+    --transition: all 0.2s ease;
+    --transition-fast: all 0.15s ease;
+    --transition-slow: all 0.3s ease;
+    
+    /* Volume slider colors */
+    --volume-low: #2563eb;
+    --volume-mid: #6366f1;
+    --volume-high: #ef4444;
+    
+    /* Toast */
+    --toast-bg: #1e293b;
+    --toast-text: #ffffff;
+    --toast-success: #2563eb;
+    --toast-error: #ef4444;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 520px;
+    max-height: 700px;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f7fa;
+    color: var(--text-gray);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.container {
+    padding: 12px 12px 0;
+    background: transparent;
+    border-radius: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Заголовок */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary), #001b81);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    box-shadow: var(--box-shadow);
+}
+
+.header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0;
+}
+
+/* Индикатор статуса — см. улучшенную версию ниже */
+
+/* Карточки статуса */
+/* Карточка метрик */
+.metrics-card,
+.check-timer-bar,
+.monitor-wrapper {
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.metrics-card {
+    background: var(--background-white);
+    border-radius: var(--border-radius-xl);
+    padding: 6px;
+    margin-bottom: 6px;
+    box-shadow: var(--box-shadow);
+}
+
+.metrics-card-inner {
+    display: flex;
+    align-items: center;
+}
+
+.metrics-divider {
+    width: 1px;
+    height: 56px;
+    background: var(--border-color);
+    flex-shrink: 0;
+}
+
+.metric-block {
+    flex: 1;
+    text-align: center;
+    padding: 12px 8px;
+}
+
+.metric-value {
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+.metric-blue .metric-value {
+    color: var(--primary);
+}
+
+.metric-orange .metric-value {
+    color: var(--secondary);
+}
+
+.metric-orange .metric-label {
+    color: var(--text-light);
+}
+
+.metric-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+/* Большая кнопка мониторинга + мини-кнопки */
+.monitor-wrapper {
+    position: relative;
+    margin: 2px 0 6px;
+}
+
+.btn-monitor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    color: white;
+    background: #eab308;
+    box-shadow: var(--box-shadow);
+}
+
+.btn-monitor:hover {
+    background: #ca8a04;
+    box-shadow: var(--box-shadow-hover);
+}
+
+.btn-monitor:active {
+    transform: scale(0.98);
+}
+
+.btn-monitor.active {
+    background: var(--primary);
+}
+
+.btn-monitor.active:hover {
+    background: var(--primary-dark);
+}
+
+.monitor-mini-btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.btn-mini {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--background-white);
+    color: var(--text-gray);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-mini:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-lighter);
+}
+
+.btn-mini i {
+    font-size: 14px;
+}
+
+/* Контролы звука */
+.sound-controls {
+    background: var(--background-light);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.control-group {
+    margin-bottom: 20px;
+}
+
+.control-group:last-child {
+    margin-bottom: 0;
+}
+
+.control-group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 14px;
+}
+
+.control-group-title i {
+    color: var(--primary);
+    font-size: 16px;
+}
+
+/* Переключатели */
+.toggle-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.toggle-label {
+    font-weight: 500;
+    color: var(--text-gray);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toggle-label i {
+    font-size: 16px;
+}
+
+.toggle-container {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.toggle-checkbox {
+    display: none;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--border-color);
+    transition: var(--transition);
+    border-radius: 999px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background: white;
+    transition: var(--transition);
+    border-radius: 50%;
+    box-shadow: var(--box-shadow);
+}
+
+.toggle-checkbox:checked + .toggle-slider {
+    background: #93c5fd;
+}
+
+.toggle-checkbox:checked + .toggle-slider:before {
+    transform: translateX(30px);
+    background: #60a5fa;
+}
+
+.toggle-checkbox:checked + .toggle-slider {
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.15);
+}
+
+.sound-status-text {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 5px;
+    padding-left: 30px;
+}
+
+/* Ползунки громкости */
+.volume-control {
+    margin: 20px 0;
+}
+
+.volume-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.volume-label span {
+    font-weight: 500;
+    color: var(--text-gray);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.volume-value {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 14px;
+    min-width: 40px;
+    text-align: right;
+}
+
+.volume-slider-container {
+    position: relative;
+    height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.volume-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 3px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.volume-slider:hover {
+    opacity: 1;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: var(--box-shadow);
+    border: 2px solid var(--primary);
+    transition: var(--transition);
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: var(--box-shadow);
+    border: 2px solid var(--primary);
+}
+
+/* Кнопки */
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    letter-spacing: 0.3px;
+}
+
+.btn i {
+    font-size: 16px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    border: 1px solid var(--primary);
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+.btn-secondary {
+    background: var(--background-subtle);
+    color: var(--text-gray);
+    border: 1px solid transparent;
+}
+
+.btn-secondary:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background: var(--background-subtle);
+    color: var(--text-gray);
+    border: 1px solid transparent;
+}
+
+.btn-outline:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+    border: 1px solid var(--danger);
+}
+
+.btn-danger:hover {
+    background: var(--secondary-dark);
+    transform: translateY(-1px);
+}
+
+/* Интервалы */
+.interval-controls {
+    background: rgba(248, 59, 28, 0.05);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(248, 59, 28, 0.2);
+}
+
+.interval-select-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.select-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.select-wrapper i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary);
+    font-size: 14px;
+    z-index: 1;
+}
+
+.interval-select {
+    width: 100%;
+    padding: 10px 10px 10px 36px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: white;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-gray);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    transition: var(--transition);
+}
+
+.interval-select:hover {
+    border-color: var(--primary);
+}
+
+.interval-select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.interval-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.interval-info-item {
+    flex: 1;
+    text-align: center;
+}
+
+.interval-info-label {
+    font-size: 11px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.interval-info-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.interval-info-value span {
+    font-size: 12px;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+/* Вспомогательные кнопки */
+.utility-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+/* Заголовок над табами */
+.app-title-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: -12px -12px 0;
+    padding: 14px 12px;
+    background: #f8f9fa;
+}
+
+.app-logo {
+    height: 28px;
+    width: auto;
+}
+
+.app-version-badge {
+    font-size: 11px;
+    color: var(--text-lighter);
+    font-weight: 500;
+    margin-left: 8px;
+    flex: 1;
+}
+
+.title-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Маленькая кнопка обновления (в углу) */
+.btn-refresh {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: var(--background-subtle);
+    color: var(--text-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: var(--transition);
+}
+
+.btn-refresh:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.btn-refresh:active {
+    transform: scale(0.9);
+}
+
+/* Табы */
+.tab-header {
+    display: flex;
+    background: var(--background-white);
+    border-radius: var(--border-radius);
+    padding: 3px;
+    margin: 10px 0 12px;
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 7px;
+    border: none;
+    background: transparent;
+    color: var(--text-light);
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: var(--transition);
+}
+
+.tab-btn:hover {
+    color: var(--primary);
+    background: var(--primary-lighter);
+}
+
+.tab-btn.active {
+    color: var(--primary);
+    background: var(--primary-light);
+    box-shadow: var(--box-shadow);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+}
+
+#tab-dashboard.tab-content.active {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    overflow: visible;
+}
+
+#tab-dashboard .monitor-wrapper {
+    flex-grow: 1;
+}
+
+
+
+
+
+
+
+/* Статистика — единая карточка */
+.stats-card {
+    background: var(--background-white);
+    border-radius: var(--border-radius-lg);
+    padding: 10px 20px 20px;
+    margin-bottom: 12px;
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--border-color);
+}
+
+.stats-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.stats-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-gray);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stats-card-title i {
+    color: var(--primary);
+    font-size: 14px;
+}
+
+.shift-timer-inline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.shift-timer-inline i {
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.stats-cols-3 {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 8px;
+    align-items: start;
+}
+
+.stats-col {
+    text-align: center;
+}
+
+.stats-value {
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+.stats-col:last-child .stats-value {
+    color: var(--secondary);
+}
+
+.stats-label {
+    font-size: 12px;
+    color: var(--text-dark);
+    font-weight: 700;
+    margin-top: 4px;
+    text-align: center;
+}
+
+.stats-sub-value {
+    text-align: center;
+}
+
+.stats-sub-big {
+    display: block;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-light);
+    line-height: 1;
+}
+
+.stats-sub-caption {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-top: 2px;
+}
+
+.stats-peak-time {
+    text-align: center;
+    padding-top: 8px;
+}
+
+.stats-peak-time span:first-child {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-light);
+    line-height: 1;
+}
+
+.stats-peak-time-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-top: 3px;
+}
+
+/* Плоские кнопки (без теней) */
+.btn-flat {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-gray);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-flat:hover {
+    background: var(--primary-lighter);
+    color: var(--primary);
+}
+
+.btn-flat i {
+    font-size: 12px;
+}
+
+/* Кнопки статистики */
+.stats-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+.stats-actions .btn-flat {
+    flex: 1;
+    padding: 6px 8px;
+    font-size: 11px;
+}
+
+/* Кнопки логов в 2 колонки */
+.logs-btn-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.logs-btn-row .btn {
+    padding: 10px 12px;
+    font-size: 12px;
+}
+
+.logs-btn-row .btn i {
+    font-size: 13px;
+}
+
+.logs-info {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 8px;
+}
+
+/* Инструменты: апдейт-кнопки в ряд */
+.tools-update-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.tools-update-status {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 4px;
+}
+
+/* Settings group */
+.settings-group {
+    background: var(--background-white);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.settings-group-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.settings-group-title i {
+    color: #2563eb;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+.settings-group-title:only-child {
+    margin-bottom: 0;
+}
+
+/* Единый, чистый статус-бар */
+#footerStatusBar {
+    display: flex;
+    align-items: center;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: auto;
+    margin-bottom: 0 !important;
+    padding: 10px 16px 0 16px;
+    background: #f8f9fa;
+    border-top: 1px solid var(--border-color);
+    font-size: 11px;
+    color: var(--text-light);
+    flex-shrink: 0;
+    min-height: 0;
+}
+
+.status-bar-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--success);
+}
+
+.status-bar-text {
+    font-weight: 500;
+}
+
+.status-bar-sep {
+    color: var(--text-lighter);
+}
+
+.status-bar-time {
+    color: var(--text-muted);
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 27, 129, 0.05);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    background: var(--background-white);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border-color);
+}
+
+.sound-settings-modal {
+    max-width: 450px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: var(--primary);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.modal-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 15px;
+}
+
+.modal-section-title i {
+    color: var(--primary);
+}
+
+/* Стили для выбора типа оповещения в модальном окне */
+.notification-type-selector-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.type-option-modal {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.type-option-modal:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    transform: translateY(-1px);
+}
+
+.type-option-modal.active {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.type-icon-modal {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.type-option-modal[data-type="sound"] .type-icon-modal {
+    background: var(--primary);
+}
+
+.type-option-modal[data-type="voice"] .type-icon-modal {
+    background: var(--secondary);
+}
+
+.type-content-modal {
+    flex: 1;
+}
+
+.type-title-modal {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.type-description-modal {
+    font-size: 11px;
+    color: var(--text-light);
+}
+
+.type-radio-modal {
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.type-radio-modal input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.radio-check-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--text-lighter);
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.type-radio-modal input[type="radio"]:checked ~ .radio-check-modal {
+    border-color: var(--primary);
+}
+
+.type-radio-modal input[type="radio"]:checked ~ .radio-check-modal::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 10px;
+    height: 10px;
+    background: var(--primary);
+    border-radius: 50%;
+}
+
+.voice-status-modal {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(37, 99, 235, 0.1);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text-gray);
+}
+
+.voice-status-modal i {
+    color: var(--success);
+}
+
+.voice-status-modal.error {
+    background: rgba(248, 55, 28, 0.1);
+    color: var(--danger);
+}
+
+.voice-status-modal.error i {
+    color: var(--danger);
+}
+
+/* Стили для выбора звуков в модальном окне */
+.sound-selector-modal {
+    margin-bottom: 20px;
+}
+
+.sound-selector-modal:last-child {
+    margin-bottom: 0;
+}
+
+.sound-selector-header-modal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.sound-selector-title-modal {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 14px;
+}
+
+.sound-selector-title-modal i {
+    color: var(--primary);
+}
+
+.btn-test-sound-modal {
+    display: none;
+}
+
+.sound-options-modal {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.sound-option-modal {
+    padding: 6px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+}
+
+.sound-option-modal:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.sound-option-modal.active {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.sound-option-modal.active .sound-option-title-modal {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.sound-option-icon-modal {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 13px;
+    background: var(--primary);
+}
+
+
+
+.sound-option-title-modal {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+/* Стили для громкости в модальном окне */
+.volume-control-modal {
+    margin: 15px 0;
+}
+
+.volume-label-modal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.volume-label-modal span {
+    font-weight: 500;
+    color: var(--text-gray);
+    font-size: 13px;
+}
+
+.volume-value-modal {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 13px;
+    min-width: 35px;
+    text-align: right;
+}
+
+.volume-slider-container-modal {
+    position: relative;
+    height: 25px;
+    display: flex;
+    align-items: center;
+}
+
+.volume-slider-modal {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 3px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.volume-slider-modal:hover {
+    opacity: 1;
+}
+
+.volume-slider-modal::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: var(--box-shadow);
+    border: 2px solid var(--primary);
+    transition: var(--transition);
+}
+
+.volume-slider-modal::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+/* Кнопки в модальном окне */
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-actions .btn {
+    padding: 12px 16px;
+    font-size: 13px;
+}
+
+/* Стили для статуса авто-перезапуска */
+.auto-restart-notification {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    animation: slideIn 0.3s ease-out;
+}
+
+.auto-restart-notification.success {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+.auto-restart-notification.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.auto-restart-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 400px) {
+    body {
+        width: 380px;
+    }
+    
+    .container {
+        padding: 15px;
+    }
+    
+    .btn-monitor {
+        padding: 14px;
+        font-size: 15px;
+    }
+    
+    .interval-select-group {
+        flex-direction: column;
+    }
+    
+    .modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+}
+
+/* Анимации */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container {
+    animation: slideIn 0.3s ease-out;
+}
+
+.modal-content {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Кастомный скроллбар */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-light);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--text-lighter);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
+}
+
+/* ============================================= */
+/* ВИЗУАЛЬНАЯ ИЕРАРХИЯ: Collapsible-секции */
+/* ============================================= */
+
+/* Секции с возможностью сворачивания */
+.collapsible-section {
+    margin-bottom: 16px;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.collapsible-section:hover {
+    border-color: var(--primary);
+}
+
+.collapsible-section.primary-section {
+    border-left: 3px solid var(--primary);
+}
+
+.collapsible-section.secondary-section {
+    border-left: 3px solid var(--secondary);
+}
+
+.collapsible-section.accent-section {
+    border-left: 3px solid var(--warning);
+}
+
+.collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: var(--background-white);
+    cursor: pointer;
+    user-select: none;
+    transition: var(--transition-fast);
+}
+
+.collapsible-header:hover {
+    background: var(--primary-lighter);
+}
+
+.collapsible-header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 14px;
+}
+
+.collapsible-header-title i {
+    color: var(--primary);
+    font-size: 16px;
+    transition: var(--transition);
+}
+
+.collapsible-chevron {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    transition: transform 0.3s ease;
+    font-size: 12px;
+}
+
+.collapsible-section.open .collapsible-chevron {
+    transform: rotate(180deg);
+}
+
+.collapsible-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s ease;
+    background: var(--background-light);
+    padding: 0 16px;
+}
+
+.collapsible-section.open .collapsible-body {
+    max-height: 1200px;
+    padding: 16px;
+}
+
+/* Бейджи приоритетов */
+.section-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.section-badge.primary {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.section-badge.secondary {
+    background: var(--secondary-light);
+    color: var(--secondary);
+}
+
+.section-badge.warning {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.section-badge.success {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+/* ============================================= */
+/* АНИМАЦИИ СЧЁТЧИКОВ */
+/* ============================================= */
+
+@keyframes counterBounce {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.25); }
+    50% { transform: scale(0.95); }
+    70% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes counterFlash {
+    0% { color: var(--text-dark); }
+    25% { color: var(--secondary); }
+    50% { color: var(--text-dark); }
+    75% { color: var(--secondary); }
+    100% { color: var(--text-dark); }
+}
+
+@keyframes cardPulse {
+    0% { box-shadow: 0 0 0 0 rgba(248, 55, 28, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(248, 55, 28, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(248, 55, 28, 0); }
+}
+
+@keyframes cardPulseSuccess {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.metric-value.bounce {
+    animation: counterBounce 0.3s ease;
+}
+
+.metric-value.flash {
+    animation: counterFlash 0.3s ease;
+}
+
+@keyframes counterBounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+@keyframes counterFlash {
+    0% { color: var(--text-dark); }
+    25% { color: var(--secondary); }
+    50% { color: var(--text-dark); }
+    75% { color: var(--secondary); }
+    100% { color: var(--text-dark); }
+}
+
+.metric-block.pulse-alert {
+    animation: cardPulse 1s ease 2;
+}
+
+.metric-block.pulse-success {
+    animation: cardPulseSuccess 1s ease 2;
+}
+
+/* Индикатор тренда */
+.trend-indicator {
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    margin-left: 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.trend-indicator.visible {
+    opacity: 1;
+}
+
+.trend-indicator.up {
+    color: var(--danger);
+}
+
+.trend-indicator.down {
+    color: var(--success);
+}
+
+/* ============================================= */
+/* TOAST-УВЕДОМЛЕНИЯ */
+/* ============================================= */
+
+.toast-container {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+    width: calc(100% - 32px);
+    max-width: 380px;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--toast-bg);
+    color: var(--toast-text);
+    border-radius: var(--border-radius);
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: var(--box-shadow-lg);
+    pointer-events: auto;
+    animation: toastSlideIn 0.3s ease, toastFadeOut 0.3s ease 2.7s forwards;
+}
+
+.toast.success {
+    background: #065f46;
+    border-left: 3px solid var(--toast-success);
+}
+
+.toast.error {
+    background: #7f1d1d;
+    border-left: 3px solid var(--toast-error);
+}
+
+.toast.info {
+    background: #1e3a5f;
+    border-left: 3px solid var(--info);
+}
+
+.toast.warning {
+    background: #78350f;
+    border-left: 3px solid var(--warning);
+}
+
+.toast-icon {
+    flex-shrink: 0;
+    font-size: 16px;
+}
+
+.toast.success .toast-icon { color: var(--toast-success); }
+.toast.error .toast-icon { color: var(--toast-error); }
+.toast.info .toast-icon { color: var(--info); }
+.toast.warning .toast-icon { color: var(--warning); }
+
+.toast-message {
+    flex: 1;
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes toastFadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* ============================================= */
+/* LOADING-СОСТОЯНИЯ КНОПОК */
+/* ============================================= */
+
+.btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+    position: relative;
+    color: transparent !important;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: btnSpinner 0.6s linear infinite;
+    color: white;
+}
+
+.btn-primary.loading::after {
+    color: white;
+}
+
+.btn-secondary.loading::after {
+    color: var(--text-gray);
+}
+
+.btn-outline.loading::after {
+    color: var(--primary);
+}
+
+@keyframes btnSpinner {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================= */
+/* RIPPLE-ЭФФЕКТ НА КНОПКАХ */
+/* ============================================= */
+
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(0);
+    animation: rippleEffect 0.6s ease-out;
+    pointer-events: none;
+}
+
+.btn-secondary .ripple,
+.btn-outline .ripple {
+    background: rgba(0, 65, 170, 0.15);
+}
+
+@keyframes rippleEffect {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* ============================================= */
+/* УЛУЧШЕННЫЕ ПОЛЗУНКИ ГРОМКОСТИ */
+/* ============================================= */
+
+.volume-slider {
+    background: linear-gradient(90deg, 
+        var(--volume-low) 0%, 
+        var(--volume-low) 33%, 
+        var(--volume-mid) 33%, 
+        var(--volume-mid) 66%, 
+        var(--volume-high) 66%, 
+        var(--volume-high) 100%
+    ) !important;
+    background-size: 100% 6px !important;
+    background-repeat: no-repeat !important;
+    border-radius: 3px;
+    position: relative;
+}
+
+.volume-slider::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+}
+
+.volume-level-indicator {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text-light);
+    margin-top: 4px;
+    padding: 0 2px;
+}
+
+.volume-level-indicator span {
+    transition: var(--transition-fast);
+}
+
+.volume-level-indicator span.active {
+    font-weight: 600;
+}
+
+.volume-level-indicator span.active.low { color: var(--volume-low); }
+.volume-level-indicator span.active.mid { color: var(--volume-mid); }
+.volume-level-indicator span.active.high { color: var(--volume-high); }
+
+/* ============================================= */
+/* FADE-IN МОДАЛЬНЫХ ОКОН */
+/* ============================================= */
+
+.modal {
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.modal.show {
+    opacity: 1;
+}
+
+.modal-content {
+    transform: scale(0.95) translateY(10px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                opacity 0.25s ease;
+    opacity: 0;
+}
+
+.modal.show .modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* Улучшенный backdrop */
+.modal {
+    background: rgba(0, 27, 129, 0.15);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* ============================================= */
+/* УЛУЧШЕННЫЕ HOVER-ЭФФЕКТЫ */
+/* ============================================= */
+
+/* Карточки статуса — улучшенный hover */
+.status-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.status-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(0, 65, 170, 0.02) 100%);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.status-card:hover::before {
+    opacity: 1;
+}
+
+/* Иконки — hover-анимация */
+.status-card-icon,
+.header-icon {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.status-card:hover .status-card-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+.header:hover .header-icon {
+    transform: rotate(10deg) scale(1.05);
+}
+
+/* Кнопки — улучшенный hover */
+.btn {
+    position: relative;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+    opacity: 0;
+    transition: var(--transition);
+    border-radius: inherit;
+}
+
+.btn:hover::before {
+    opacity: 1;
+}
+
+/* Тогглы — улучшенная анимация */
+.toggle-slider {
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.toggle-slider:before {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.2s ease;
+}
+
+.toggle-slider:before:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Select-ы — улучшенный hover */
+.interval-select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23445866' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    transition: var(--transition);
+}
+
+.interval-select:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* ============================================= */
+/* УЛУЧШЕННЫЙ СТАТУС-ИНДИКАТОР */
+/* ============================================= */
+
+.status-indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    transition: var(--transition);
+    position: relative;
+}
+
+.status-indicator.active {
+    background: var(--success);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.status-indicator.active::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--success);
+    animation: statusPing 2s ease-in-out infinite;
+}
+
+.status-indicator.inactive {
+    background: var(--danger);
+    box-shadow: 0 0 0 3px rgba(248, 55, 28, 0.2);
+}
+
+@keyframes statusPing {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Пульсация кнопки мониторинга */
+.btn-monitor-active {
+    animation: monitorPulse 2s ease-in-out infinite;
+}
+
+@keyframes monitorPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(248, 55, 28, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(248, 55, 28, 0);
+    }
+}
+
+/* ============================================= */
+/* РАЗДЕЛИТЕЛИ СЕКЦИЙ */
+/* ============================================= */
+
+.section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0 16px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-light);
+}
+
+.section-divider::before,
+.section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+/* Статус-бар точка — состояние */
+.status-bar-dot.error {
+    background: var(--danger);
+    animation: statusError 1s ease-in-out infinite;
+}
+
+@keyframes statusError {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+@keyframes statusError {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* ============================================= */
+/* КОНТЕКСТНЫЕ ПОДСКАЗКИ */
+/* ============================================= */
+
+.tooltip {
+    position: relative;
+}
+
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    background: var(--toast-bg);
+    color: var(--toast-text);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition-fast);
+    z-index: 100;
+}
+
+.tooltip:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+}
+
+/* ============================================= */
+/* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ TELEGRAM */
+/* ============================================= */
+
+/* Стили для полей ввода в модальном окне Telegram */
+input[type="text"], input[type="password"], textarea {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: var(--transition);
+}
+
+input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+    outline: none;
+    border-color: #0088cc;
+    box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.2);
+}
+
+/* Стили для кнопок Telegram */
+.btn-telegram {
+    background: linear-gradient(135deg, #0088cc, #005c99);
+    color: white;
+    border: 1px solid #0088cc;
+}
+
+.btn-telegram:hover {
+    background: linear-gradient(135deg, #0099dd, #0066aa);
+    transform: translateY(-1px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+/* Анимация для Telegram уведомлений */
+@keyframes telegramPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 136, 204, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 136, 204, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 136, 204, 0);
+    }
+}
+
+.telegram-pulse {
+    animation: telegramPulse 2s infinite;
+}
+
+/* Стили для статусных сообщений в модальном окне Telegram */
+.status-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.status-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* Стили для инструкций */
+code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9em;
+    color: #1e293b;
+}
+
+/* Адаптивность для модального окна Telegram */
+@media (max-width: 400px) {
+    .modal-content.sound-settings-modal {
+        width: 98%;
+        max-height: 90vh;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .modal-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Иконка для Telegram в заголовке */
+.fa-telegram {
+    color: #0088cc;
+}
+
+.fa-telegram-plane {
+    color: #0088cc;
+}
+
+/* ============================================= */
+/* СКЕЛЕТОН-ЗАГРУЗКА (Shimmer) */
+/* ============================================= */
+
+.skeleton {
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.6) 50%, 
+        transparent 100%
+    );
+    animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.status-card-value.skeleton-text {
+    background: var(--background-subtle);
+    border-radius: 4px;
+    color: transparent !important;
+    min-width: 40px;
+    display: inline-block;
+}
+
+/* ============================================= */
+/* ПРОГРЕСС-БАР ТАЙМЕРА */
+/* ============================================= */
+
+.check-timer-bar {
+    width: 100%;
+    height: 2px;
+    background: var(--border-color);
+    margin: 6px 0 0;
+    overflow: hidden;
+}
+
+.check-timer-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #93c5fd);
+    width: 0%;
+    transition: width 1s linear;
+}
+
+.check-timer-text {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+/* ============================================= */
+/* КАСКАДНАЯ АНИМАЦИЯ ПОЯВЛЕНИЯ */
+/* ============================================= */
+
+.cascade-item {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: cascadeIn 0.4s ease forwards;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cascade-item .btn {
+    flex: 1;
+    min-width: 100px;
+}
+
+.cascade-item .btn:last-child {
+    min-width: 70px;
+}
+
+@keyframes cascadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================= */
+/* АНИМИРОВАННЫЙ ГРАДИЕНТ ФОНА */
+/* ============================================= */
+
+.header {
+    background: linear-gradient(135deg, 
+        var(--primary-lighter) 0%, 
+        var(--background-white) 50%, 
+        var(--primary-lighter) 100%
+    );
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+    border-radius: var(--border-radius);
+    padding: 16px;
+    margin: -20px -20px 20px;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ============================================= */
+/* SPARKLINE МИНИ-ГРАФИК */
+/* ============================================= */
+
+.sparkline-container {
+    flex: 1;
+}
+
+.sparkline-label {
+    display: none;
+}
+
+.sparkline-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.stats-sparkline {
+    display: flex;
+    flex-direction: column;
+}
+
+.sparkline-footer {
+    text-align: center;
+    margin-top: 2px;
+}
+
+.sparkline-duration {
+    font-size: 8px;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+.sparkline-line {
+    fill: none;
+    stroke: var(--primary);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.sparkline-area {
+    fill: url(#sparklineGradient);
+    opacity: 0.3;
+}
+
+.sparkline-dot {
+    fill: var(--primary);
+    stroke: white;
+    stroke-width: 1.5;
+}
+
+.sparkline-dot.latest {
+    fill: var(--secondary);
+    r: 3;
+}
+
+/* ============================================= */
+/* УЛУЧШЕННЫЕ МОДАЛКИ */
+/* ============================================= */
+
+.modal {
+    background: rgba(0, 27, 129, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.modal.show .modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* Spring-анимация для модалок */
+.modal-content {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                opacity 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+.modal-content:hover {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 
+                0 12px 12px -6px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================= */
+/* ДОПОЛНИТЕЛЬНЫЕ ПОЛИРОВКИ */
+/* ============================================= */
+
+/* Плавное появление кнопок */
+.utility-buttons .btn {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Glow-эффект на активных элементах */
+.metric-block.pulse-alert::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--danger), transparent);
+    opacity: 0.1;
+    animation: glowPulse 1s ease 2;
+}
+
+@keyframes glowPulse {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.15; }
+}
+
+/* Smooth scrollbar для модалок */
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--text-lighter);
+    border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
+}
+
+/* Анимированная иконка обновления */
+.btn-secondary i.fa-sync-alt {
+    transition: transform 0.5s ease;
+}
+
+.btn-secondary:hover i.fa-sync-alt {
+    transform: rotate(180deg);
+}
+
+.btn-secondary:active i.fa-sync-alt {
+    transform: rotate(360deg);
+}
+
+/* Улучшенный фокус для доступности */
+.btn:focus-visible,
+.interval-select:focus-visible,
+.toggle-checkbox:focus-visible + .toggle-slider {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Микро-анимация иконок */
+.status-card:hover .status-card-icon i {
+    animation: iconBounce 0.5s ease;
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+/* ============================================= */
+/* QUICK-ACTIONS FAB */
+/* ============================================= */
+
+.fab-container {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    z-index: 500;
+}
+
+.fab-button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(0, 65, 170, 0.4);
+    transition: var(--transition);
+}
+
+.fab-button:hover {
+    background: var(--primary-dark);
+    transform: scale(1.1);
+}
+
+.fab-button.open {
+    transform: rotate(45deg);
+    background: var(--secondary);
+}
+
+.fab-menu {
+    position: absolute;
+    bottom: 54px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+    pointer-events: none;
+    transition: var(--transition);
+}
+
+.fab-menu.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.fab-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--background-white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-dark);
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+.fab-menu-item:hover {
+    background: var(--primary-lighter);
+    border-color: var(--primary);
+}
+
+.fab-menu-item i {
+    color: var(--primary);
+    width: 16px;
+    text-align: center;
+}
+
+/* ============================================= */
+/* АДАПТИВНОСТЬ */
+/* ============================================= */
+
+.container {
+    width: 100%;
+    min-width: 320px;
+    max-width: 600px;
+}
+
+body {
+    width: 100%;
+    min-width: 320px;
+    max-width: 480px;
+}
+
+@media (max-width: 360px) {
+    .metric-value {
+        font-size: 40px;
+    }
+    
+    .volume-control {
+        flex-direction: column;
+    }
+    
+    .interval-select-group {
+        flex-direction: column;
+    }
+    
+    .modal-content.sound-settings-modal {
+        width: 95vw;
+        max-width: 95vw;
+    }
+    
+    .collapsible-header-title {
+        font-size: 13px;
+    }
+    
+    .section-badge {
+        display: none;
+    }
+}
+
+/* ============================================= */
+/* EMPTY STATE */
+/* ============================================= */
+
+.empty-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.empty-state.visible {
+    display: flex;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    color: var(--text-lighter);
+    margin-bottom: 16px;
+    animation: emptyPulse 3s ease-in-out infinite;
+}
+
+@keyframes emptyPulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.empty-state-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.empty-state-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.empty-state-btn {
+    padding: 10px 24px;
+    border-radius: var(--border-radius);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: var(--primary);
+    color: white;
+    transition: var(--transition);
+}
+
+.empty-state-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.container.empty-mode .metrics-card,
+.container.empty-mode .check-timer-bar,
+.container.empty-mode .check-timer-text,
+.container.empty-mode .btn-monitor,
+.container.empty-mode .monitor-wrapper,
+.container.empty-mode .status-bar,
+
+.container.empty-mode .section-divider,
+.container.empty-mode .collapsible-section,
+.container.empty-mode .sound-controls,
+.container.empty-mode .utility-buttons {
+    display: none;
+}
+
+.container.empty-mode .empty-state {
+    display: flex;
+}
