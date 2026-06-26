@@ -1,0 +1,3058 @@
+document.addEventListener('DOMContentLoaded', function() {
+    logger.logModuleLoad('popup.js');
+
+    // ============ КЭШИРОВАНИЕ ЭЛЕМЕНТОВ ============
+    const elements = {
+        // Статус и счетчики
+        statusText: document.getElementById('statusText'),
+        countText: document.getElementById('countText'),
+        groupCountText: document.getElementById('groupCountText'),
+        lastNotification: document.getElementById('lastNotification'),
+        statusIndicator: document.getElementById('statusIndicator'),
+        debugNumbers: document.getElementById('debugNumbers'),
+
+        // Кнопки управления
+        toggleMonitor: document.getElementById('toggleMonitor'),
+        refreshCount: document.getElementById('refreshCount'),
+        
+        // MAX элементы
+        toggleMax: document.getElementById('toggleMax'),
+        configureMax: document.getElementById('configureMax'),
+        testMax: document.getElementById('testMax'),
+        maxStatus: document.getElementById('maxStatus'),
+        maxQuickInfo: document.getElementById('maxQuickInfo'),
+        
+        // Модальное окно MAX
+        maxSettingsModal: document.getElementById('maxSettingsModal'),
+        maxBotToken: document.getElementById('maxBotToken'),
+        showTokenToggle: document.getElementById('showTokenToggle'),
+        validateToken: document.getElementById('validateToken'),
+        clearToken: document.getElementById('clearToken'),
+        tokenValidationStatus: document.getElementById('tokenValidationStatus'),
+        maxUserId: document.getElementById('maxUserId'),
+        getUserId: document.getElementById('getUserId'),
+        clearUserId: document.getElementById('clearUserId'),
+        userIdStatus: document.getElementById('userIdStatus'),
+        maxMessageTemplate: document.getElementById('maxMessageTemplate'),
+        maxGroupMessageTemplate: document.getElementById('maxGroupMessageTemplate'),
+        maxSendImmediately: document.getElementById('maxSendImmediately'),
+        sendTestMax: document.getElementById('sendTestMax'),
+        testMessageStatus: document.getElementById('testMessageStatus'),
+        maxConfigStatus: document.getElementById('maxConfigStatus'),
+        statusToken: document.getElementById('statusToken'),
+        statusUserId: document.getElementById('statusUserId'),
+        statusTemplates: document.getElementById('statusTemplates'),
+        statusSendMode: document.getElementById('statusSendMode'),
+        saveMaxSettings: document.getElementById('saveMaxSettings'),
+        clearMaxSettings: document.getElementById('clearMaxSettings'),
+        closeMaxSettings: document.getElementById('closeMaxSettings'),
+        maxModalClose: document.getElementById('maxModalClose'),
+        
+        // Прокси для MAX
+        maxConnectionType: document.getElementById('maxConnectionType'),
+        maxProxyType: document.getElementById('maxProxyType'),
+        maxProxyHost: document.getElementById('maxProxyHost'),
+        maxProxyPort: document.getElementById('maxProxyPort'),
+        maxProxyUsername: document.getElementById('maxProxyUsername'),
+        maxProxyPassword: document.getElementById('maxProxyPassword'),
+        maxCustomApiUrl: document.getElementById('maxCustomApiUrl'),
+        proxyStatus: document.getElementById('proxyStatus'),
+        
+        // Авто-перезапуск
+        toggleAutoRestart: document.getElementById('toggleAutoRestart'),
+        autoRestartInterval: document.getElementById('autoRestartInterval'),
+        currentAutoRestartInterval: document.getElementById('currentAutoRestartInterval'),
+        autoRestartStatus: document.getElementById('autoRestartStatus'),
+        
+        // Авто-включение звука ночью
+        toggleNightAutoEnable: document.getElementById('toggleNightAutoEnable'),
+        nightAutoEnableStatus: document.getElementById('nightAutoEnableStatus'),
+        nextNightEnableTime: document.getElementById('nextNightEnableTime'),
+        
+        // Звук и переключатели
+        toggleSound: document.getElementById('toggleSound'),
+        dashboardToggleSound: document.getElementById('dashboardToggleSound'),
+        toggleGroupMonitor: document.getElementById('toggleGroupMonitor'),
+        soundStatus: document.getElementById('soundStatus'),
+        groupMonitorStatus: document.getElementById('groupMonitorStatus'),
+        
+        // Ползунки громкости
+        soundVolumeSlider: document.getElementById('soundVolumeSlider'),
+        groupVolumeSlider: document.getElementById('groupVolumeSlider'),
+        soundVolumeValue: document.getElementById('soundVolumeValue'),
+        groupVolumeValue: document.getElementById('groupVolumeValue'),
+        
+        // Тесты звука
+        testSound: document.getElementById('testSound'),
+        testGroupSound: document.getElementById('testGroupSound'),
+        
+        // Интервалы
+        checkInterval: document.getElementById('checkInterval'),
+        notificationCooldown: document.getElementById('notificationCooldown'),
+        applyIntervals: document.getElementById('applyIntervals'),
+        currentCheckInterval: document.getElementById('currentCheckInterval'),
+        currentCooldown: document.getElementById('currentCooldown'),
+        
+        // Кнопки
+        showSettings: document.getElementById('showSettings'),
+        
+        // Модальное окно звуков
+        soundSettingsModal: document.getElementById('soundSettingsModal'),
+        typeSoundModal: document.getElementById('typeSoundModal'),
+        typeVoiceModal: document.getElementById('typeVoiceModal'),
+        voiceStatusModal: document.getElementById('voiceStatusModal'),
+        voiceVolumeSliderModal: document.getElementById('voiceVolumeSliderModal'),
+        voiceVolumeValueModal: document.getElementById('voiceVolumeValueModal'),
+        voiceVolumeSection: document.getElementById('voiceVolumeSection'),
+        soundSelectionSection: document.getElementById('soundSelectionSection'),
+        classificationSoundsModal: document.getElementById('classificationSoundsModal'),
+        groupSoundsModal: document.getElementById('groupSoundsModal'),
+        saveSettings: document.getElementById('saveSettings'),
+        closeSettings: document.getElementById('closeSettings'),
+
+        // Модальное окно игнорирования
+        ignoreModal: document.getElementById('ignoreModal'),
+        ignoreNumberInput: document.getElementById('ignoreNumberInput'),
+        addIgnoreNumberBtn: document.getElementById('addIgnoreNumber'),
+        ignoredNumbersList: document.getElementById('ignoredNumbersList'),
+        clearIgnoredNumbersBtn: document.getElementById('clearIgnoredNumbers'),
+        saveIgnoreSettingsBtn: document.getElementById('saveIgnoreSettings'),
+        closeIgnoreModalBtn: document.getElementById('closeIgnoreModal'),
+        ignoreModalClose: document.getElementById('ignoreModalClose'),
+        ignoredCountSpan: document.getElementById('ignoredCount'),
+        ignoreSettingsBtn: document.getElementById('ignoreSettings'),
+        notificationThreshold: document.getElementById('notificationThreshold'),
+        // Экспорт/импорт
+        exportSettingsBtn: document.getElementById('exportSettings'),
+        importSettingsBtn: document.getElementById('importSettings'),
+        importFileInput: document.getElementById('importFileInput'),
+        // Статистика
+        statTotalToday: document.getElementById('statTotalToday'),
+        statClassification: document.getElementById('statClassification'),
+        statGroup: document.getElementById('statGroup'),
+        statPeak: document.getElementById('statPeak'),
+        statPeakTime: document.getElementById('statPeakTime'),
+        // FAB
+        fabButton: document.getElementById('fabButton'),
+        fabMenu: document.getElementById('fabMenu'),
+        fabToggleMonitor: document.getElementById('fabToggleMonitor'),
+        fabRefresh: document.getElementById('fabRefresh'),
+        fabTestSound: document.getElementById('fabTestSound'),
+        fabIgnore: document.getElementById('fabIgnore'),
+        // Логи
+        downloadLogsBtn: document.getElementById('downloadLogs'),
+        clearLogsBtn: document.getElementById('clearLogs'),
+        logsInfo: document.getElementById('logsInfo'),
+        
+        // Обновление
+        checkUpdate: document.getElementById('checkUpdate'),
+        applyUpdate: document.getElementById('applyUpdate'),
+        currentVersion: document.getElementById('currentVersion'),
+        updateStatus: document.getElementById('updateStatus'),
+        extensionFolder: document.getElementById('extensionFolder'),
+        
+        // Отправка статистики в MAX
+        sendStatsToMax: document.getElementById('sendStatsToMax'),
+        sendMonthlyStatsToMax: document.getElementById('sendMonthlyStatsToMax'),
+        statsSendStatus: document.getElementById('statsSendStatus'),
+    };
+
+    // ============ СОСТОЯНИЕ ПРИЛОЖЕНИЯ ============
+    const state = {
+        isSoundEnabled: true,
+        isGroupMonitoringEnabled: false,
+        isMonitoring: false,
+        notificationType: 'sound',
+        currentTab: null,
+        soundType: 'modern',
+        groupSoundType: 'group_chime',
+        soundVolume: 80,
+        groupVolume: 70,
+        voiceVolume: 100,
+        voiceAvailable: true,
+        soundOptions: [],
+        groupSoundOptions: [],
+        soundInfo: null,
+        soundDisableTimer: null,
+        checkInterval: 10000,
+        notificationCooldown: 10000,
+        lastUpdate: null,
+        
+        // Сессионная статистика
+        sessionStart: Date.now(),
+        sessionTotalRequests: 0,
+        lastCheckTime: null,
+        
+        // История для sparkline
+        classificationHistory: [],
+        groupHistory: [],
+        maxHistoryLength: 36,
+        lastSparklineRecordTime: 0,
+        sparklineRecordInterval: 300000, // 5 минут
+        
+        // Таймер проверки
+        lastCheckTimestamp: null,
+        checkIntervalMs: 10000,
+        
+        // Порог уведомлений
+        notificationThreshold: 1,
+        lastNotifiedCount: { classification: 0, group: 0 },
+        
+        // Номера заявок для отслеживания новых (для статистики)
+        knownApplicationNumbers: {
+            classification: [],
+            group: []
+        },
+        
+        // Почасовые данные для графика
+        hourlyClassification: [],
+        hourlyGroup: [],
+        
+        // Статистика за день
+        todayStats: {
+            date: new Date().toDateString(),
+            totalRequests: 0,
+            peakCount: 0,
+            peakTime: null,
+            checks: 0,
+            counts: []
+        },
+        
+        // Умное сворачивание
+        sectionOpenCounts: {},
+        popupOpenCount: 0,
+        
+        // Авто-перезапуск
+        autoRestartEnabled: false,
+        autoRestartInterval: 30000,
+        autoRestartTimer: null,
+        autoRestartCheckCount: 0,
+        
+        // Авто-включение звука ночью
+        nightAutoEnableEnabled: false,
+        nextNightEnableTimer: null,
+        
+        // MAX
+        maxEnabled: false,
+        maxConfigured: false,
+        maxSettings: {
+            enabled: false,
+            botToken: '',
+            userId: '',
+            messageTemplate: '🔔 В {time} обнаружено {count} новых заявок на {type}',
+            groupMessageTemplate: '👥 В {time} обнаружено {count} задач в группах',
+            sendImmediately: true
+        },
+        
+        // Состояние модальных окон
+        modalState: {
+            notificationType: 'sound',
+            soundType: 'modern',
+            groupSoundType: 'group_chime',
+            voiceVolume: 100
+        },
+        
+        maxModalState: {
+            botToken: '',
+            userId: '',
+            messageTemplate: '🔔 В {time} обнаружено {count} новых заявок на {type}',
+            groupMessageTemplate: '👥 В {time} обнаружено {count} задач в группах',
+            sendImmediately: true,
+            tokenValidated: false,
+            userIdObtained: false
+        },
+    };
+
+    // ============ ИНИЦИАЛИЗАЦИЯ ============
+    // Используем Set для хранения ID интервалов
+    const intervalIds = new Set();
+
+    function createSafeInterval(fn, ms) {
+        const id = setInterval(fn, ms);
+        intervalIds.add(id);
+        return id;
+    }
+
+    function clearSafeInterval(id) {
+        if (id) {
+            clearInterval(id);
+            intervalIds.delete(id);
+        }
+    }
+
+    // ============ ПЕРЕКЛЮЧЕНИЕ ТАБОВ ============
+    function initTabs() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+
+                tabButtons.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                this.classList.add('active');
+                const content = document.getElementById('tab-' + tabId);
+                if (content) {
+                    content.classList.add('active');
+                }
+
+                // Обновить график при переключении на stats
+                if (tabId === 'stats') {
+                    renderHourlyChart();
+                }
+            });
+        });
+    }
+
+    // ============ ВИЗУАЛЬНЫЕ УЛУЧШЕНИЯ ============
+    
+    // --- Toast-уведомления ---
+    function showToast(message, type = 'info', duration = 3000) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        
+        // Удаляем предыдущие тосты
+        while (container.firstChild) {
+            container.firstChild.remove();
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        const icons = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-exclamation-circle',
+            warning: 'fas fa-exclamation-triangle',
+            info: 'fas fa-info-circle'
+        };
+        
+        toast.innerHTML = `
+            <i class="${icons[type] || icons.info} toast-icon"></i>
+            <span class="toast-message">${message}</span>
+        `;
+        
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, duration);
+    }
+    
+    // --- Collapsible-секции с сохранением состояния ---
+    function setupCollapsibleSections() {
+        // Загружаем сохранённые состояния
+        chrome.storage.local.get(['sectionStates'], (result) => {
+            const states = result.sectionStates || {};
+            document.querySelectorAll('.collapsible-section').forEach(section => {
+                const name = section.dataset.section;
+                if (name && states[name] !== undefined) {
+                    if (states[name]) {
+                        section.classList.add('open');
+                    } else {
+                        section.classList.remove('open');
+                    }
+                }
+            });
+            // Логи по умолчанию закрыты
+            const logsSection = document.querySelector('.collapsible-section[data-section="logs"]');
+            if (logsSection && states['logs'] === undefined) {
+                logsSection.classList.remove('open');
+            }
+        });
+        
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const section = header.closest('.collapsible-section');
+                if (section) {
+                    section.classList.toggle('open');
+                    // Сохраняем состояние
+                    const name = section.dataset.section;
+                    if (name) {
+                        chrome.storage.local.get(['sectionStates'], (result) => {
+                            const states = result.sectionStates || {};
+                            states[name] = section.classList.contains('open');
+                            chrome.storage.local.set({ sectionStates: states });
+                        });
+                    }
+                }
+            });
+        });
+    }
+    
+    // --- Динамические бейджи секций ---
+    function updateSoundSectionBadge() {
+        const badge = document.getElementById('soundSectionBadge');
+        if (!badge) return;
+        if (state.isSoundEnabled) {
+            badge.textContent = 'Активно';
+            badge.className = 'section-badge success';
+        } else {
+            badge.textContent = 'Выключено';
+            badge.className = 'section-badge secondary';
+        }
+    }
+    
+    // --- Анимации счётчиков ---
+    const previousCounts = { classification: 0, group: 0 };
+    
+    function animateCounterChange(elementId, newValue, cardId) {
+        const element = document.getElementById(elementId);
+        const card = document.getElementById(cardId);
+        if (!element) return;
+        
+        const numValue = parseInt(newValue) || 0;
+        const prevValue = elementId === 'countText' ? previousCounts.classification : previousCounts.group;
+        
+        if (elementId === 'countText') {
+            previousCounts.classification = numValue;
+        } else {
+            previousCounts.group = numValue;
+        }
+        
+        if (numValue !== prevValue) {
+            element.classList.remove('bounce', 'flash');
+            void element.offsetWidth;
+            element.classList.add('bounce');
+            
+            setTimeout(() => {
+                element.classList.add('flash');
+            }, 100);
+            
+            if (card) {
+                card.classList.remove('pulse-alert', 'pulse-success');
+                void card.offsetWidth;
+                
+                if (numValue > prevValue) {
+                    card.classList.add('pulse-alert');
+                } else if (numValue < prevValue && numValue === 0) {
+                    card.classList.add('pulse-success');
+                }
+            }
+            
+            setTimeout(() => {
+                element.classList.remove('bounce', 'flash');
+                if (card) card.classList.remove('pulse-alert', 'pulse-success');
+            }, 1200);
+        }
+    }
+    
+    // --- Ripple-эффект на кнопках ---
+    function setupRippleEffect() {
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    }
+    
+    // --- Fade-in для модалок ---
+    function showModal(modalElement) {
+        if (!modalElement) return;
+        modalElement.style.display = 'flex';
+        void modalElement.offsetWidth;
+        modalElement.classList.add('show');
+    }
+    
+    function hideModal(modalElement) {
+        if (!modalElement) return;
+        modalElement.classList.remove('show');
+        setTimeout(() => {
+            modalElement.style.display = 'none';
+        }, 250);
+    }
+    
+    // --- Loading-состояние кнопок ---
+    function setButtonLoading(button, isLoading) {
+        if (!button) return;
+        if (isLoading) {
+            button.classList.add('loading');
+            button.disabled = true;
+        } else {
+            button.classList.remove('loading');
+            button.disabled = false;
+        }
+    }
+    
+    // --- Индикаторы уровня громкости ---
+    function updateVolumeIndicators(sliderId, indicatorSelector) {
+        const slider = document.getElementById(sliderId);
+        const indicators = document.querySelectorAll(indicatorSelector);
+        if (!slider || !indicators.length) return;
+        
+        const value = parseInt(slider.value);
+        
+        indicators.forEach(ind => {
+            ind.classList.remove('active');
+        });
+        
+        if (value <= 33) {
+            indicators[0]?.classList.add('active');
+        } else if (value <= 66) {
+            indicators[1]?.classList.add('active');
+        } else {
+            indicators[2]?.classList.add('active');
+        }
+    }
+    
+    // --- Улучшенный статус мониторинга ---
+    function updateMonitoringButtonState() {
+        const btn = elements.toggleMonitor;
+        if (!btn) return;
+        
+        if (state.isMonitoring) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    }
+    
+    // --- Убрать скелетон при первой загрузке данных ---
+    function removeSkeleton() {
+        document.querySelectorAll('.skeleton-text').forEach(el => {
+            el.classList.remove('skeleton-text', 'skeleton');
+        });
+    }
+    
+    // --- Обновление прогресс-бара таймера ---
+    function updateCheckTimer() {
+        const bar = document.getElementById('checkTimerBar');
+        const progress = document.getElementById('checkTimerProgress');
+        const text = document.getElementById('checkTimerText');
+        if (!bar || !progress || !text) return;
+        
+        if (!state.isMonitoring || !state.lastCheckTimestamp) {
+            bar.style.display = 'none';
+            text.textContent = '';
+            return;
+        }
+        
+        bar.style.display = 'block';
+        bar.classList.add('active');
+        
+        const interval = state.checkIntervalMs || 10000;
+        const elapsed = (Date.now() - state.lastCheckTimestamp) % interval;
+        const pct = (elapsed / interval) * 100;
+        const remaining = Math.max(Math.ceil((interval - elapsed) / 1000), 0);
+        
+        progress.style.width = pct + '%';
+        text.textContent = 'Следующая проверка через ' + remaining + 'с';
+    }
+    
+    // --- Sparkline рендеринг ---
+    function renderSparkline(svgId, data, color) {
+        const svg = document.getElementById(svgId);
+        if (!svg) return;
+        if (data.length === 0) data = [0, 0];
+        if (data.length === 1) data = [data[0], data[0]];
+        
+        const width = 200;
+        const height = 40;
+        const padLeft = 22;
+        const pad = 2;
+        
+        const dataMax = Math.max(...data, 1);
+        const steps = [10, 20, 30, 50, 100, 150, 200, 300, 500];
+        const ceiling = steps.find(s => s >= dataMax) || 500;
+        const min = 0;
+        const range = ceiling - min || 1;
+        
+        const plotW = width - padLeft - pad;
+        
+        const points = data.map((val, i) => {
+            const x = padLeft + (i / (data.length - 1)) * plotW;
+            const y = height - pad - ((val - min) / range) * (height - pad * 2);
+            return { x, y, val };
+        });
+        
+        const linePath = points.map((p, i) => (i === 0 ? 'M' : 'L') + p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' ');
+        const areaPath = linePath + ` L${points[points.length - 1].x.toFixed(1)},${height} L${points[0].x.toFixed(1)},${height} Z`;
+        
+        const lastPoint = points[points.length - 1];
+        
+        const y50 = height - pad - (50 / range) * (height - pad * 2);
+        const yCeil = height - pad - (ceiling / range) * (height - pad * 2);
+        
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        let labels = `<text x="${padLeft - 4}" y="${height - 2}" font-size="7" fill="#94a3b8" text-anchor="end">0</text>`;
+        labels += `<text x="${padLeft - 4}" y="${yCeil + 7}" font-size="7" fill="#94a3b8" text-anchor="end">${ceiling}</text>`;
+        if (ceiling > 50) {
+            labels += `<text x="${padLeft - 4}" y="${y50 + 2.5}" font-size="7" fill="#94a3b8" text-anchor="end">50</text>`;
+        }
+        svg.innerHTML = `
+            <defs>
+                <linearGradient id="sparkGrad_${svgId}" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="${color}" stop-opacity="0.4"/>
+                    <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+                </linearGradient>
+            </defs>
+            ${labels}
+            <path d="${areaPath}" fill="url(#sparkGrad_${svgId})" />
+            <path d="${linePath}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="${lastPoint.x}" cy="${lastPoint.y}" r="3" fill="${color}" stroke="white" stroke-width="1.5"/>
+        `;
+    }
+    
+    function updateSparklines() {
+        const classContainer = document.getElementById('classificationSparkline');
+        const groupContainer = document.getElementById('groupSparkline');
+
+        if (classContainer && state.classificationHistory.length >= 2) {
+            classContainer.style.display = 'block';
+            renderSparkline('classificationSparkSvg', state.classificationHistory, '#2563eb');
+        }
+
+        if (groupContainer && state.groupHistory.length >= 2) {
+            groupContainer.style.display = 'block';
+            renderSparkline('groupSparkSvg', state.groupHistory, '#6366f1');
+        }
+    }
+
+    function renderHourlyChart() {
+        const svg = document.getElementById('hourlyChartSvg');
+        if (!svg) return;
+        
+        const classHourly = state.hourlyClassification || [];
+        const groupHourly = state.hourlyGroup || [];
+        
+        // Суммируем классификацию и группы по часам
+        // Индекс 0 = 6:00, индекс 1 = 7:00, ... индекс 23 = 5:00
+        const totalHourly = [];
+        for (let i = 0; i < 24; i++) {
+            totalHourly.push((classHourly[i] || 0) + (groupHourly[i] || 0));
+        }
+        
+        // Определяем текущий час для обрезки графика (показываем только прошедшие часы с 7:00)
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        // Индекс в массиве: час 6 = индекс 0, 7 = 1, ..., 5 = 23
+        let lastIndex = currentHour >= 6 ? currentHour - 6 : currentHour + 18;
+        // Если сейчас 6:xx, добавляем минуты чтобы показать частичный час
+        if (currentHour === 6 && currentMinute >= 59) {
+            lastIndex = 0;
+        }
+        // Показываем с индекса 1 (7:00) по lastIndex включительно
+        const startIdx = 1; // 7:00
+        if (lastIndex < startIdx) {
+            lastIndex = startIdx;
+        }
+        
+        const displayData = totalHourly.slice(startIdx, lastIndex + 1);
+        
+        if (displayData.length < 2) {
+            svg.innerHTML = '';
+            svg.style.display = 'none';
+            return;
+        }
+        svg.style.display = 'block';
+        
+        const width = 280;
+        const height = 80;
+        const padLeft = 24;
+        const padRight = 4;
+        const padTop = 4;
+        const padBottom = 16;
+        
+        const dataMax = Math.max(...displayData, 1);
+        const steps = [5, 10, 20, 30, 50, 100, 150, 200, 300, 500, 1000, 2000, 5000];
+        const ceiling = steps.find(s => s >= dataMax) || 5000;
+        const range = ceiling || 1;
+        
+        const plotW = width - padLeft - padRight;
+        const plotH = height - padTop - padBottom;
+        const color = '#2563eb';
+        
+        const points = displayData.map((val, i) => {
+            const x = padLeft + (i / (displayData.length - 1)) * plotW;
+            const y = padTop + plotH - (val / range) * plotH;
+            return { x, y, val };
+        });
+        
+        const linePath = points.map((p, i) => (i === 0 ? 'M' : 'L') + p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' ');
+        const areaPath = linePath + ` L${points[points.length - 1].x.toFixed(1)},${padTop + plotH} L${points[0].x.toFixed(1)},${padTop + plotH} Z`;
+        
+        const lastPoint = points[points.length - 1];
+        
+        // Y-метки
+        const yLabels = [];
+        const labelSteps = [1, 2, 5, 10, 20, 50, 100, 200, 500];
+        const yStep = labelSteps.find(s => s * 2 >= ceiling / 3) || 100;
+        for (let v = 0; v <= ceiling; v += yStep) {
+            yLabels.push(v);
+        }
+        if (yLabels[yLabels.length - 1] < ceiling) yLabels.push(ceiling);
+        
+        // X-метки (часы)
+        const xLabels = [];
+        for (let i = startIdx; i <= lastIndex; i++) {
+            const hour = (i + 6) % 24;
+            xLabels.push(hour);
+        }
+        
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        
+        let html = `
+            <defs>
+                <linearGradient id="hourlyGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="${color}" stop-opacity="0.4"/>
+                    <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+                </linearGradient>
+            </defs>
+        `;
+        
+        // Y-метки
+        yLabels.forEach(v => {
+            const y = padTop + plotH - (v / range) * plotH;
+            html += `<text x="${padLeft - 4}" y="${y + 3}" font-size="7" fill="#94a3b8" text-anchor="end">${v}</text>`;
+            // Горизонтальная линия сетки
+            html += `<line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="#e2e8f0" stroke-width="0.5"/>`;
+        });
+        
+        // X-метки (каждый второй, чтобы не слипались)
+        const labelInterval = xLabels.length > 12 ? 2 : 1;
+        xLabels.forEach((hour, i) => {
+            if (i % labelInterval !== 0 && i !== xLabels.length - 1) return;
+            const p = points[i];
+            if (!p) return;
+            const label = hour.toString().padStart(2, '0') + ':00';
+            html += `<text x="${p.x}" y="${height - 2}" font-size="7" fill="#94a3b8" text-anchor="middle">${label}</text>`;
+        });
+        
+        // Площадь и линия
+        html += `<path d="${areaPath}" fill="url(#hourlyGrad)" />`;
+        html += `<path d="${linePath}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+        
+        // Точка на последнем значении
+        html += `<circle cx="${lastPoint.x}" cy="${lastPoint.y}" r="3" fill="${color}" stroke="white" stroke-width="1.5"/>`;
+        
+        // Подпись последнего значения
+        if (lastPoint.val > 0) {
+            html += `<text x="${lastPoint.x}" y="${lastPoint.y - 6}" font-size="8" font-weight="bold" fill="${color}" text-anchor="middle">${lastPoint.val}</text>`;
+        }
+        
+        svg.innerHTML = html;
+    }
+    
+    // ============ ТАЙМЕР КОНЦА СМЕНЫ ============
+    function updateShiftTimer() {
+        const timerEl = document.getElementById('shiftTimer');
+        if (!timerEl) return;
+        
+        const now = new Date();
+        const targetTime = new Date(now);
+        
+        // Следующие 06:59
+        targetTime.setHours(6, 59, 0, 0);
+        
+        if (targetTime <= now) {
+            targetTime.setDate(targetTime.getDate() + 1);
+        }
+        
+        const diff = targetTime.getTime() - now.getTime();
+        
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        timerEl.textContent = hours.toString().padStart(2, '0') + ':' + 
+                              minutes.toString().padStart(2, '0') + ':' + 
+                              seconds.toString().padStart(2, '0');
+    }
+
+    // ============ ПОЛУЧЕНИЕ НОМЕРОВ ЗАЯВОК И СТАТИСТИКА ============
+    
+    /**
+     * Получить номера заявок из content script и обновить статистику
+      */
+    function updateStatsWithNumbers() {
+        // Сначала пробуем получить из shiftTracker (работает даже при выключенном мониторинге)
+        return new Promise((resolve) => {
+            chrome.runtime.sendMessage({ type: 'SHIFT_GET_STATS' }, (response) => {
+                if (response && response.success) {
+                    // classificationTotal - сколько было ВСЕГО на классификации за смену
+                    // groupTotal - сколько было ВСЕГО в группе за смену
+                    // currentClassification - сколько сейчас на классификации
+                    // currentGroup - сколько сейчас в группах
+                    const classificationTotal = response.classificationTotal || 0;
+                    const groupTotal = response.groupTotal || 0;
+                    const currentClassification = response.currentClassification || 0;
+                    const currentGroup = response.currentGroup || 0;
+                    
+                    logger.log('🔧 Stats: classTotal=' + classificationTotal + ', groupTotal=' + groupTotal + ', currentClass=' + currentClassification + ', currentGroup=' + currentGroup);
+                    
+                    // Для статистики показываем:
+                    // classificationCount - сколько ВСЕГО было на классификации за смену
+                    // groupCount - сколько ВСЕГО было в группе за смену
+                    state.todayStats.classificationCount = classificationTotal;
+                    state.todayStats.groupCount = groupTotal;
+                    state.todayStats.totalRequests = classificationTotal + groupTotal;
+                    
+                    // Обновляем peak если текущее больше
+                    const currentTotal = currentClassification + currentGroup;
+                    if (currentTotal > state.todayStats.peakCount) {
+                        state.todayStats.peakCount = currentTotal;
+                        state.todayStats.peakTime = new Date().toLocaleTimeString('ru-RU', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        });
+                    }
+                    
+                    // Сохраняем почасовые данные для графика
+                    if (response.shift) {
+                        state.hourlyClassification = response.shift.hourlyClassification || [];
+                        state.hourlyGroup = response.shift.hourlyGroup || [];
+                    }
+                    
+                    // Сохраняем в storage
+                    saveDailyStats();
+                    
+                    // Рендерим
+                    renderDailyStats();
+                    resolve();
+                } else {
+                    // Fallback: пробуем получить из content script
+                    resolve(updateStatsFromContent());
+                }
+            });
+        });
+    }
+    
+    // Fallback: получить статистику из content script
+    function updateStatsFromContent() {
+        if (!state.currentTab) return Promise.resolve();
+        
+        return sendMessageToContentScript({ type: 'GET_APPLICATION_NUMBERS' })
+            .then(response => {
+                if (response && response.success) {
+                    const classificationCount = (response.classificationNumbers || []).length;
+                    const groupCount = (response.groupNumbers || []).length;
+                    const totalToday = classificationCount + groupCount;
+                    
+                    // Сохраняем в state для отображения
+                    state.todayStats.classificationCount = classificationCount;
+                    state.todayStats.groupCount = groupCount;
+                    state.todayStats.totalRequests = totalToday;
+                    
+                    // Обновляем peak если текущее больше
+                    if (totalToday > state.todayStats.peakCount) {
+                        state.todayStats.peakCount = totalToday;
+                        state.todayStats.peakTime = new Date().toLocaleTimeString('ru-RU', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        });
+                    }
+                    
+                    // Сохраняем в storage
+                    saveDailyStats();
+                    
+                    // Рендерим
+                    renderDailyStats();
+                }
+            })
+            .catch(err => {
+                logger.log('⚠️ Ошибка получения номеров заявок:', err);
+            });
+    }
+
+    // ============ ЭКСПОРТ/ИМПОРТ НАСТРОЕК ============
+    function exportSettings() {
+        chrome.storage.local.get(null, (data) => {
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '1c-monitor-settings-' + new Date().toISOString().slice(0, 10) + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Настройки экспортированы', 'success');
+        });
+    }
+
+    function importSettings() {
+        if (elements.importFileInput) elements.importFileInput.click();
+    }
+
+    function handleImportFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target.result);
+                chrome.storage.local.set(data, () => {
+                    showToast('Настройки импортированы. Перезагрузите popup.', 'success');
+                    setTimeout(() => window.location.reload(), 1500);
+                });
+            } catch (err) {
+                showToast('Ошибка: неверный формат файла', 'error');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    // ============ СТАТИСТИКА ЗА ДЕНЬ ============
+    // Ключ для хранения в chrome.storage.local
+    const STATS_STORAGE_KEY = 'dailyStats';
+
+    function loadDailyStats() {
+        return new Promise(resolve => {
+            chrome.storage.local.get([STATS_STORAGE_KEY], (result) => {
+                const stored = result[STATS_STORAGE_KEY];
+                const today = new Date().toDateString();
+                
+                // Если сохранённые данные за сегодня - загружаем
+                if (stored && stored.date === today) {
+                    state.todayStats = {
+                        date: today,
+                        totalRequests: stored.totalRequests || 0,
+                        classificationCount: stored.classificationCount || 0,
+                        groupCount: stored.groupCount || 0,
+                        peakCount: stored.peakCount || 0,
+                        peakTime: stored.peakTime || null,
+                        checks: stored.checks || 0,
+                        counts: stored.counts || []
+                    };
+                } else {
+                    // Новый день - сброс
+                    state.todayStats = {
+                        date: today,
+                        totalRequests: 0,
+                        classificationCount: 0,
+                        groupCount: 0,
+                        peakCount: 0,
+                        peakTime: null,
+                        checks: 0,
+                        counts: []
+                    };
+                }
+                resolve();
+            });
+        });
+    }
+
+    function saveDailyStats() {
+        chrome.storage.local.set({
+            [STATS_STORAGE_KEY]: state.todayStats
+        });
+    }
+
+    function updateDailyStats(newClassCount, newGroupCount) {
+    const stats = state.todayStats;
+    const today = new Date().toDateString();
+    
+    // Проверка на новый день
+    if (stats.date !== today) {
+        stats.date = today;
+        stats.totalRequests = 0;
+        stats.classificationCount = 0;
+        stats.groupCount = 0;
+        stats.peakCount = 0;
+        stats.peakTime = null;
+        stats.checks = 0;
+        stats.counts = [];
+    }
+    
+    // Увеличиваем счётчик проверок
+    stats.checks++;
+    
+    // Добавляем НОВЫЕ заявки (только приращение)
+    const newTotal = newClassCount + newGroupCount;
+    if (newTotal > 0) {
+        stats.totalRequests += newTotal;
+        stats.classificationCount += newClassCount;
+        stats.groupCount += newGroupCount;
+        stats.counts.push(newTotal);
+        
+        // Обновляем пик
+        if (newTotal > stats.peakCount) {
+            stats.peakCount = newTotal;
+            stats.peakTime = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Сохраняем в storage
+        saveDailyStats();
+    }
+    
+    renderDailyStats();
+}
+
+    function renderDailyStats() {
+        const stats = state.todayStats;
+        if (elements.statTotalToday) elements.statTotalToday.textContent = stats.totalRequests || 0;
+        if (elements.statClassification) elements.statClassification.textContent = stats.classificationCount || 0;
+        if (elements.statGroup) elements.statGroup.textContent = stats.groupCount || 0;
+        if (elements.statPeak) elements.statPeak.textContent = stats.peakCount || 0;
+        if (elements.statPeakTime) elements.statPeakTime.textContent = stats.peakTime || '—';
+        renderHourlyChart();
+    }
+
+    // ============ УМНОЕ СВОРАЧИВАНИЕ ============
+    function setupSmartCollapsing() {
+        chrome.storage.local.get(['sectionOpenCounts', 'popupOpenCount'], (result) => {
+            state.sectionOpenCounts = result.sectionOpenCounts || {};
+            state.popupOpenCount = (result.popupOpenCount || 0) + 1;
+            chrome.storage.local.set({ popupOpenCount: state.popupOpenCount });
+            
+            // После 3+ открытий — авто-сворачиваем редко используемые
+            if (state.popupOpenCount >= 3) {
+                document.querySelectorAll('.collapsible-section.open').forEach(section => {
+                    const name = section.dataset.section;
+                    const opens = state.sectionOpenCounts[name] || 0;
+                    if (opens < 2 && name !== 'autoRestart' && name !== 'sound') {
+                        section.classList.remove('open');
+                    }
+                });
+            }
+        });
+        
+        // Отслеживаем открытия секций
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const section = header.closest('.collapsible-section');
+                if (!section) return;
+                const name = section.dataset.section;
+                if (!name) return;
+                state.sectionOpenCounts[name] = (state.sectionOpenCounts[name] || 0) + 1;
+                chrome.storage.local.set({ sectionOpenCounts: state.sectionOpenCounts });
+            });
+        });
+    }
+
+    // ============ QUICK-ACTIONS FAB ============
+    function setupFAB() {
+        if (!elements.fabButton || !elements.fabMenu) return;
+        
+        elements.fabButton.addEventListener('click', () => {
+            elements.fabButton.classList.toggle('open');
+            elements.fabMenu.classList.toggle('open');
+        });
+        
+        // Закрываем при клике вне FAB
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.fab-container')) {
+                elements.fabButton.classList.remove('open');
+                elements.fabMenu.classList.remove('open');
+            }
+        });
+        
+        if (elements.fabToggleMonitor) elements.fabToggleMonitor.addEventListener('click', () => {
+            toggleMonitoring();
+            elements.fabButton.classList.remove('open');
+            elements.fabMenu.classList.remove('open');
+        });
+        if (elements.fabRefresh) elements.fabRefresh.addEventListener('click', () => {
+            updateStatus();
+            elements.fabButton.classList.remove('open');
+            elements.fabMenu.classList.remove('open');
+        });
+        if (elements.fabTestSound) elements.fabTestSound.addEventListener('click', () => {
+            testSoundAlert();
+            elements.fabButton.classList.remove('open');
+            elements.fabMenu.classList.remove('open');
+        });
+        if (elements.fabIgnore) elements.fabIgnore.addEventListener('click', () => {
+            showIgnoreModal();
+            elements.fabButton.classList.remove('open');
+            elements.fabMenu.classList.remove('open');
+        });
+    }
+
+    function initialize() {
+        logger.log('🔊 Инициализация монитора...');
+        
+        // Сначала загружаем данные из storage
+        loadDailyStats().then(() => {
+            renderDailyStats();
+        });
+        
+        // Получаем статистику из shiftTracker (работает даже при выключенном мониторинге)
+        updateStatsWithNumbers();
+        
+        loadSettings();
+        loadMaxSettings();
+        initTabs();
+        renderHourlyChart();
+        setupEventListeners();
+        setupIgnoreEventListeners();
+        setupCollapsibleSections();
+        setupRippleEffect();
+        setupSmartCollapsing();
+        setupFAB();
+        getCurrentTab();
+        updateSoundInfo();
+        updateIntervalsFromContentScript();
+        updateLastNotificationTime();
+        updateFooterSessionInfo();
+        loadSoundOptions();
+        
+        // Инициализация индикаторов громкости
+        updateVolumeIndicators('soundVolumeSlider', '.volume-level-indicator[data-for="sound"] span');
+        updateVolumeIndicators('groupVolumeSlider', '.volume-level-indicator[data-for="group"] span');
+
+        // Периодическое обновление (с автоматической очисткой)
+        createSafeInterval(updateSoundInfo, 30000);
+        createSafeInterval(updateLastNotificationTime, 60000);
+        createSafeInterval(updateStatus, 3000);
+        createSafeInterval(updateFooterSessionInfo, 30000);
+        createSafeInterval(updateCheckTimer, 1000);
+        createSafeInterval(updateStatsWithNumbers, 10000);
+        createSafeInterval(updateShiftTimer, 1000);
+        
+        // Проверка авто-перезапуска
+        createSafeInterval(() => {
+            if (state.autoRestartEnabled && state.autoRestartTimer === null) {
+                startAutoRestartTimer();
+            }
+        }, 5000);
+    }
+
+    // Очистка интервалов при закрытии popup
+    window.addEventListener('beforeunload', () => {
+        // Сохраняем статистику перед закрытием
+        saveDailyStats();
+        
+        for (const id of intervalIds) {
+            clearInterval(id);
+        }
+        intervalIds.clear();
+        if (state.soundDisableTimer) {
+            clearTimeout(state.soundDisableTimer);
+        }
+        if (state.autoRestartTimer) {
+            clearInterval(state.autoRestartTimer);
+        }
+        if (state.nextNightEnableTimer) {
+            clearTimeout(state.nextNightEnableTimer);
+        }
+    });
+
+    // ============ НАСТРОЙКИ ЗВУКА ============
+    function loadSettings() {
+        chrome.storage.local.get([
+            'soundEnabled', 'soundVolumeLevel', 'groupVolumeLevel', 'voiceVolumeLevel',
+            'groupMonitoringEnabled', 'checkInterval', 'notificationCooldown',
+            'soundDisableEndTime', 'notificationType', 'soundType', 'groupSoundType',
+            'autoRestartEnabled', 'autoRestartInterval', 'nightAutoEnableEnabled',
+            'extensionFolder'
+        ], (result) => {
+            try {
+                // Проверка временного отключения звука
+                let soundEnabledFromStorage = result.soundEnabled !== false;
+                
+                if (result.soundDisableEndTime) {
+                    const now = new Date().getTime();
+                    if (now < result.soundDisableEndTime) {
+                        soundEnabledFromStorage = false;
+                    } else {
+                        chrome.storage.local.remove('soundDisableEndTime');
+                        soundEnabledFromStorage = true;
+                    }
+                }
+                
+                state.isSoundEnabled = soundEnabledFromStorage;
+                state.isGroupMonitoringEnabled = result.groupMonitoringEnabled === true;
+                state.notificationType = result.notificationType || 'sound';
+                state.soundType = result.soundType || 'modern';
+                state.groupSoundType = result.groupSoundType || 'group_chime';
+                state.autoRestartEnabled = result.autoRestartEnabled === true;
+                state.autoRestartInterval = result.autoRestartInterval || 30000;
+                state.nightAutoEnableEnabled = result.nightAutoEnableEnabled === true;
+                
+                if (result.checkInterval !== undefined) {
+                    state.checkInterval = parseInt(result.checkInterval) || 10000;
+                    state.checkIntervalMs = state.checkInterval;
+                    if (elements.checkInterval) elements.checkInterval.value = state.checkInterval;
+                }
+                if (result.notificationCooldown !== undefined) {
+                    state.notificationCooldown = parseInt(result.notificationCooldown) || 10000;
+                    if (elements.notificationCooldown) elements.notificationCooldown.value = state.notificationCooldown;
+                }
+                
+                state.soundVolume = result.soundVolumeLevel !== undefined ? result.soundVolumeLevel : 80;
+                state.groupVolume = result.groupVolumeLevel !== undefined ? result.groupVolumeLevel : 70;
+                state.voiceVolume = result.voiceVolumeLevel !== undefined ? result.voiceVolumeLevel : 100;
+                state.notificationThreshold = result.notificationThreshold !== undefined ? result.notificationThreshold : 1;
+                
+                if (elements.soundVolumeSlider) elements.soundVolumeSlider.value = state.soundVolume;
+                if (elements.groupVolumeSlider) elements.groupVolumeSlider.value = state.groupVolume;
+                if (elements.notificationThreshold) elements.notificationThreshold.value = state.notificationThreshold;
+                if (elements.voiceVolumeSliderModal) elements.voiceVolumeSliderModal.value = state.voiceVolume;
+                
+                if (elements.soundVolumeValue) elements.soundVolumeValue.textContent = state.soundVolume + '%';
+                if (elements.groupVolumeValue) elements.groupVolumeValue.textContent = state.groupVolume + '%';
+                if (elements.voiceVolumeValueModal) elements.voiceVolumeValueModal.textContent = state.voiceVolume + '%';
+                
+                updateSoundToggle();
+                updateGroupMonitoringToggle();
+                updateCurrentIntervalsDisplay();
+                updateAutoRestartUI();
+                updateNightAutoEnableUI();
+                
+                // Загружаем путь к папке расширения
+                if (result.extensionFolder && elements.extensionFolder) {
+                    elements.extensionFolder.value = result.extensionFolder;
+                }
+                
+                if (state.autoRestartEnabled) {
+                    startAutoRestartTimer();
+                }
+                
+                logger.log('🔊 Настройки загружены');
+            } catch (error) {
+                logger.error('🔴 Ошибка загрузки настроек:', error);
+            }
+        });
+    }
+
+    function loadMaxSettings() {
+        chrome.storage.local.get([
+            'maxEnabled', 'maxMessageTemplate',
+            'maxGroupMessageTemplate', 'maxSendImmediately',
+            'maxBotToken', 'maxUserId', 'maxProxy'
+        ], (result) => {
+            try {
+                // По умолчанию выключено
+                state.maxSettings = {
+                    enabled: result.maxEnabled === true,
+                    messageTemplate: result.maxMessageTemplate || '🔔 В {time} обнаружено {count} новых заявок на {type}\n📋 Номера: {numbers}',
+                    groupMessageTemplate: result.maxGroupMessageTemplate || '👥 В {time} обнаружено {count} задач в группах\n📋 Номера: {numbers}',
+                    sendImmediately: result.maxSendImmediately !== false,
+                    botToken: result.maxBotToken || '',
+                    userId: result.maxUserId || '',
+                    proxy: result.maxProxy || {}
+                };
+                
+                state.maxEnabled = state.maxSettings.enabled;
+                state.maxConfigured = !!result.maxUserId;
+                
+                // Заполняем поле User ID если сохранено
+                if (elements.maxUserId && result.maxUserId) {
+                    elements.maxUserId.value = result.maxUserId;
+                }
+                
+                // Устанавливаем чекбокс из storage
+                if (elements.toggleMax) {
+                    elements.toggleMax.checked = state.maxEnabled;
+                }
+                
+                updateMaxUI();
+                logger.log('🔧 MAX настройки загружены, enabled:', state.maxEnabled);
+            } catch (error) {
+                logger.error('🔴 Ошибка загрузки настроек MAX:', error);
+            }
+        });
+    }
+
+    function loadSoundOptions() {
+        state.soundOptions = [
+            // Основные звуки
+            { id: 'classic', name: 'Очень громко', description: 'Стандартный звук уведомления', category: 'main' },
+            { id: 'modern', name: 'Современный', description: 'Современный цифровой звук', category: 'main' },
+            { id: 'alert', name: 'Громкий', description: 'Громкий привлекающий внимание', category: 'main' },
+            { id: 'soft', name: 'Мягкий', description: 'Тихий ненавязчивый звук', category: 'main' },
+            { id: 'game', name: 'Игровой', description: 'Звук из видеоигр', category: 'fun' },
+            { id: 'office', name: 'Офисный', description: 'Тихий звук для офиса', category: 'subtle' },
+            // Новые звуки
+            { id: 'melody', name: 'Мелодия', description: 'Приятная мелодия', category: 'fun' },
+            { id: 'beep', name: 'Бип', description: 'Простой короткий бип', category: 'simple' },
+            { id: 'chime', name: 'Колокольчик', description: 'Звонкий колокольчик', category: 'notification' },
+            { id: 'notification', name: 'Уведомление', description: 'Стандартное уведомление', category: 'notification' },
+            { id: 'pop', name: 'Всплывающий', description: 'Мягкий всплывающий звук', category: 'subtle' },
+            { id: 'success', name: 'Успех', description: 'Звук успешного действия', category: 'notification' },
+            { id: 'error', name: 'Ошибка', description: 'Звук ошибки', category: 'alert' },
+            { id: 'click', name: 'Клик', description: 'Звук щелчка', category: 'subtle' }
+        ];
+        
+        state.groupSoundOptions = [
+            ...state.soundOptions,
+            { id: 'group_chime', name: 'Колокольчик', description: 'Мягкий колокольчик для групп', category: 'group' },
+            { id: 'group_notification', name: 'Групповое уведомление', description: 'Отдельный звук для групповых задач', category: 'group' },
+            { id: 'group_bell', name: 'Звонок', description: 'Громкий звонок для групп', category: 'group' },
+            { id: 'group_ding', name: 'Динь', description: 'Легкий звук динь', category: 'group' }
+        ];
+        
+        state.modalState = {
+            notificationType: state.notificationType,
+            soundType: state.soundType,
+            groupSoundType: state.groupSoundType,
+            voiceVolume: state.voiceVolume
+        };
+    }
+
+    // ============ ОБРАБОТЧИКИ СОБЫТИЙ ============
+    function setupEventListeners() {
+        // Основные кнопки
+        if (elements.toggleMonitor) elements.toggleMonitor.addEventListener('click', toggleMonitoring);
+        if (elements.refreshCount) elements.refreshCount.addEventListener('click', updateStatus);
+        if (elements.debugNumbers) elements.debugNumbers.addEventListener('click', debugNumbersHandler);
+        
+        // Сохранение пути к папке расширения при изменении
+        if (elements.extensionFolder) {
+            elements.extensionFolder.addEventListener('change', function() {
+                const folder = this.value.trim();
+                if (folder) {
+                    chrome.storage.local.set({ extensionFolder: folder });
+                }
+            });
+        }
+        
+        // Кнопки обновления
+        if (elements.checkUpdate) {
+            elements.checkUpdate.addEventListener('click', function() {
+                elements.updateStatus.textContent = 'Проверяю на GitHub...';
+                
+                // Читаем текущую версию из localStorage или файла
+                const currentVersion = document.querySelector('.app-version-badge')?.textContent || 'v1.0.1';
+                
+                fetch('https://raw.githubusercontent.com/sergeyyakudzo-cmd/softupdate/main/1c-notification-extension/version.txt')
+                .then(function(r) { return r.text(); })
+                .then(function(ver) {
+                    ver = ver.trim();
+                    
+                    // Сравниваем версии
+                    const current = currentVersion.replace('v', '').trim();
+                    const github = ver.replace('v', '').trim();
+                    
+                    const currentParts = current.split('.').map(Number);
+                    const githubParts = github.split('.').map(Number);
+                    
+                    let isNewer = false;
+                    for (let i = 0; i < Math.max(currentParts.length, githubParts.length); i++) {
+                        const c = currentParts[i] || 0;
+                        const g = githubParts[i] || 0;
+                        if (g > c) {
+                            isNewer = true;
+                            break;
+                        } else if (g < c) {
+                            isNewer = false;
+                            break;
+                        }
+                    }
+                    
+                    // Формируем сообщение с цветовой индикацией
+                    if (isNewer) {
+                        elements.updateStatus.innerHTML = '<span style="color: #28a745;">Текущая: ' + currentVersion + '</span> → <span style="color: #dc3545; font-weight: bold;">GitHub: ' + ver + ' (НОВАЯ!)</span>';
+                    } else if (current === github) {
+                        elements.updateStatus.innerHTML = '<span style="color: #28a745;">Текущая: ' + currentVersion + '</span> = <span style="color: #28a745;">GitHub: ' + ver + ' (актуально)</span>';
+                    } else {
+                        elements.updateStatus.innerHTML = '<span style="color: #dc3545;">Текущая: ' + currentVersion + '</span> → <span style="color: #28a745;">GitHub: ' + ver + '</span>';
+                    }
+                })
+                .catch(function() {
+                    elements.updateStatus.textContent = 'GitHub недоступен';
+                });
+            });
+        }
+        
+        if (elements.applyUpdate) {
+            elements.applyUpdate.addEventListener('click', function() {
+                // Получаем путь из поля ввода
+                var folder = elements.extensionFolder ? elements.extensionFolder.value.trim() : '';
+                
+                if (!folder) {
+                    folder = prompt('Введите путь к папке расширения:', 'C:\\test_ch\\1c-notification-extension');
+                    if (!folder) {
+                        elements.updateStatus.textContent = 'Отменено';
+                        return;
+                    }
+                }
+                
+                // Сохраняем путь в storage
+                chrome.storage.local.set({ extensionFolder: folder }, function() {
+                    logger.log('🔧 Путь к папке сохранен:', folder);
+                });
+                
+                var github = 'https://raw.githubusercontent.com/sergeyyakudzo-cmd/softupdate/main/1c-notification-extension/';
+                
+                // Генерируем bat прямо тут
+                var lines = [];
+                lines.push('@echo off');
+                lines.push('chcp 65001 >nul');
+                lines.push('title 1C Monitor Update');
+                lines.push('color 0A');
+                lines.push('');
+                lines.push('set EXT=' + folder);
+                lines.push('set GH=' + github);
+                lines.push('');
+                lines.push('echo ==============================');
+                lines.push('echo    1C Monitor Safe Update');
+                lines.push('echo ==============================');
+                lines.push('echo.');
+                lines.push('');
+                lines.push('taskkill /f /im chrome.exe >nul 2>&1');
+                lines.push('ping 127.0.0.1 -n 2 >nul');
+                lines.push('');
+                lines.push('echo [1/4] Root files...');
+                lines.push('powershell -Command "iwr -Uri %GH%manifest.json -OutFile %EXT%\\manifest.json -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%background.js -OutFile %EXT%\\background.js -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%content.js -OutFile %EXT%\\content.js -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%popup.js -OutFile %EXT%\\popup.js -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%popup.css -OutFile %EXT%\\popup.css -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%popup.html -OutFile %EXT%\\popup.html -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%utils.js -OutFile %EXT%\\utils.js -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%logger.js -OutFile %EXT%\\logger.js -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%max.js -OutFile %EXT%\\max.js -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%config.js -OutFile %EXT%\\config.js -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%update-generator.js -OutFile %EXT%\\update-generator.js -UseBasicParsing" >nul 2>&1');
+                lines.push('echo OK');
+                lines.push('');
+                
+                // shared folder
+                lines.push('echo [2/4] Shared...');
+                lines.push('if not exist "%EXT%\\shared" mkdir "%EXT%\\shared"');
+                lines.push('powershell -Command "iwr -Uri %GH%shared/constants.js -OutFile %EXT%\\shared\\constants.js -UseBasicParsing" >nul 2>&1');
+                lines.push('echo OK');
+                lines.push('');
+                
+                // icons folder
+                lines.push('echo [3/4] Icons...');
+                lines.push('if not exist "%EXT%\\icons" mkdir "%EXT%\\icons"');
+                lines.push('powershell -Command "iwr -Uri %GH%icons/icon16.png -OutFile %EXT%\\icons\\icon16.png -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%icons/icon48.png -OutFile %EXT%\\icons\\icon48.png -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%icons/icon128.png -OutFile %EXT%\\icons\\icon128.png -UseBasicParsing" >nul 2>&1');
+                lines.push('powershell -Command "iwr -Uri %GH%icons/ALIDI-01.png -OutFile %EXT%\\icons\\ALIDI-01.png -UseBasicParsing" >nul 2>&1');
+                lines.push('echo OK');
+                lines.push('');
+                
+                // css folder
+                lines.push('echo [4/4] CSS & Version...');
+                lines.push('if not exist "%EXT%\\css" mkdir "%EXT%\\css"');
+                lines.push('powershell -Command "iwr -Uri %GH%css/inter-font.css -OutFile %EXT%\\css\\inter-font.css -UseBasicParsing" >nul 2>&1');
+                lines.push('echo 1.0.1 > "%EXT%\\version.txt"');
+                lines.push('echo DONE');
+                lines.push('');
+                lines.push('start "" "chrome.exe"');
+                lines.push('echo ==============================');
+                lines.push('echo    UPDATE COMPLETE!');
+                lines.push('echo ==============================');
+                lines.push('pause');
+                
+                var bat = lines.join('\r\n');
+                
+                if (bat && bat.length > 10) {
+                    elements.updateStatus.textContent = 'Скачиваю...';
+                    var blob = new Blob([bat], { type: 'text/plain;charset=utf-8' });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'update.bat';
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    elements.updateStatus.textContent = 'Скачано!';
+                } else {
+                    elements.updateStatus.textContent = 'Ошибка!';
+                }
+            });
+        }
+
+        // Сохранение User ID при вводе
+        if (elements.maxUserId) {
+            elements.maxUserId.addEventListener('change', saveMaxUserId);
+            elements.maxUserId.addEventListener('blur', saveMaxUserId);
+        }
+        
+        // MAX кнопки
+        if (elements.toggleMax) elements.toggleMax.addEventListener('change', toggleMaxHandler);
+        if (elements.configureMax) {
+            elements.configureMax.addEventListener('click', () => sendTestMaxMessage());
+        }
+        
+        // Модальное окно MAX
+        if (elements.closeMaxSettings) {
+            elements.closeMaxSettings.addEventListener('click', hideMaxSettings);
+        }
+        if (elements.maxModalClose) {
+            elements.maxModalClose.addEventListener('click', hideMaxSettings);
+        }
+        
+        if (elements.maxSettingsModal) {
+            elements.maxSettingsModal.addEventListener('click', (event) => {
+                if (event.target === elements.maxSettingsModal) {
+                    hideMaxSettings();
+                }
+            });
+        }
+        
+        // Авто-перезапуск
+        if (elements.toggleAutoRestart) elements.toggleAutoRestart.addEventListener('change', toggleAutoRestartHandler);
+        if (elements.autoRestartInterval) elements.autoRestartInterval.addEventListener('change', updateAutoRestartInterval);
+        
+        // Авто-включение звука ночью
+        if (elements.toggleNightAutoEnable) elements.toggleNightAutoEnable.addEventListener('change', toggleNightAutoEnableHandler);
+        
+        // Переключатели
+        if (elements.toggleSound) elements.toggleSound.addEventListener('change', toggleSoundHandler);
+        if (elements.dashboardToggleSound) elements.dashboardToggleSound.addEventListener('click', toggleSoundFromDashboard);
+        if (elements.toggleGroupMonitor) elements.toggleGroupMonitor.addEventListener('change', toggleGroupMonitoringHandler);
+        
+        // Ползунки громкости
+        if (elements.soundVolumeSlider) elements.soundVolumeSlider.addEventListener('input', updateSoundVolume);
+        if (elements.groupVolumeSlider) elements.groupVolumeSlider.addEventListener('input', updateGroupVolume);
+        if (elements.notificationThreshold) elements.notificationThreshold.addEventListener('change', updateNotificationThreshold);
+        
+        // Empty state refresh
+        if (elements.emptyRefresh) elements.emptyRefresh.addEventListener('click', () => {
+            getCurrentTab();
+        });
+        
+        if (elements.importFileInput) elements.importFileInput.addEventListener('change', handleImportFile);
+        if (elements.exportSettingsBtn) elements.exportSettingsBtn.addEventListener('click', exportSettings);
+        if (elements.importSettingsBtn) elements.importSettingsBtn.addEventListener('click', importSettings);
+        
+        // Логи
+        if (elements.downloadLogsBtn) elements.downloadLogsBtn.addEventListener('click', downloadLogs);
+        if (elements.clearLogsBtn) elements.clearLogsBtn.addEventListener('click', clearLogs);
+        updateLogsInfo();
+        
+        // Отправка статистики в MAX
+        if (elements.sendStatsToMax) elements.sendStatsToMax.addEventListener('click', sendCurrentStatsToMax);
+        if (elements.sendMonthlyStatsToMax) elements.sendMonthlyStatsToMax.addEventListener('click', sendMonthlyStatsToMax);
+        
+        // Горячие клавиши (через chrome.commands — обрабатываются в background.js)
+        chrome.runtime.onMessage.addListener((message) => {
+            if (message.type === 'KEYBOARD_COMMAND') {
+                if (message.command === 'toggle-monitor') toggleMonitoring();
+                if (message.command === 'refresh-count') updateStatus();
+            }
+        });
+        
+        // Тесты звука
+        if (elements.testSound) elements.testSound.addEventListener('click', testSoundAlert);
+        if (elements.testGroupSound) elements.testGroupSound.addEventListener('click', testGroupSoundAlert);
+        
+        // Интервалы
+        if (elements.checkInterval) elements.checkInterval.addEventListener('change', updateCurrentIntervalsDisplay);
+        if (elements.notificationCooldown) elements.notificationCooldown.addEventListener('change', updateCurrentIntervalsDisplay);
+        if (elements.applyIntervals) elements.applyIntervals.addEventListener('click', applyIntervals);
+        
+        // Дополнительные кнопки
+        if (elements.showSettings) elements.showSettings.addEventListener('click', showSoundSettings);
+        if (elements.ignoreSettingsBtn) elements.ignoreSettingsBtn.addEventListener('click', showIgnoreModal);
+        
+        // Модальное окно звуков
+        if (elements.soundSettingsModal) {
+            const modalClose = elements.soundSettingsModal.querySelector('.modal-close');
+            if (modalClose) {
+                modalClose.addEventListener('click', () => {
+                    elements.soundSettingsModal.style.display = 'none';
+                });
+            }
+            
+            if (elements.closeSettings) {
+                elements.closeSettings.addEventListener('click', () => {
+                    elements.soundSettingsModal.style.display = 'none';
+                });
+            }
+            
+            elements.soundSettingsModal.addEventListener('click', (event) => {
+                if (event.target === elements.soundSettingsModal) {
+                    elements.soundSettingsModal.style.display = 'none';
+                }
+            });
+        }
+        
+        if (elements.saveSettings) elements.saveSettings.addEventListener('click', saveSoundSettings);
+        
+        document.querySelectorAll('.type-option-modal').forEach(option => {
+            option.addEventListener('click', () => {
+                const type = option.dataset.type;
+                updateModalNotificationType(type);
+            });
+        });
+        
+        updateButtonIcons();
+    }
+
+    // ============ ОБРАБОТЧИКИ ИГНОРИРОВАНИЯ ============
+    function setupIgnoreEventListeners() {
+        if (!elements.ignoreSettingsBtn || !elements.ignoreModal) {
+            logger.log('⚠️ Элементы игнорирования не найдены');
+            return;
+        }
+
+        // Открытие модального окна
+        elements.ignoreSettingsBtn.addEventListener('click', () => {
+            showIgnoreModal();
+        });
+
+        // Кнопка добавления номера
+        if (elements.addIgnoreNumberBtn) {
+            elements.addIgnoreNumberBtn.addEventListener('click', addIgnoreNumber);
+        }
+
+        // Кнопка очистки всех номеров
+        if (elements.clearIgnoredNumbersBtn) {
+            elements.clearIgnoredNumbersBtn.addEventListener('click', clearAllIgnoredNumbers);
+        }
+
+        // Кнопка сохранения
+        if (elements.saveIgnoreSettingsBtn) {
+            elements.saveIgnoreSettingsBtn.addEventListener('click', saveIgnoreSettings);
+        }
+
+        // Кнопки закрытия
+        if (elements.closeIgnoreModalBtn) {
+            elements.closeIgnoreModalBtn.addEventListener('click', closeIgnoreModal);
+        }
+
+        if (elements.ignoreModalClose) {
+            elements.ignoreModalClose.addEventListener('click', closeIgnoreModal);
+        }
+
+        // Закрытие по клику вне окна
+        elements.ignoreModal.addEventListener('click', (event) => {
+            if (event.target === elements.ignoreModal) {
+                closeIgnoreModal();
+            }
+        });
+
+        // Обработка Enter в поле ввода
+        if (elements.ignoreNumberInput) {
+            elements.ignoreNumberInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addIgnoreNumber();
+                }
+            });
+        }
+    }
+
+    function showIgnoreModal() {
+        const modal = elements.ignoreModal;
+        if (!modal) return;
+        
+        // Используем стандартный showModal с fade-in
+        showModal(modal);
+        loadAndDisplayIgnoredNumbers();
+    }
+
+    function closeIgnoreModal() {
+        const modal = elements.ignoreModal;
+        if (modal) hideModal(modal);
+        
+        const overlay = document.getElementById('ignoreModalOverlay');
+        if (overlay) overlay.remove();
+    }
+
+    function addIgnoreNumber() {
+        if (!elements.ignoreNumberInput) return;
+        
+        let number = elements.ignoreNumberInput.value.trim();
+        
+        if (!number) {
+            alert('Введите номер заявки');
+            return;
+        }
+        
+        // Обработка разных форматов: HD+12цифр или HD+9цифр
+        if (number.toUpperCase().startsWith('HD')) {
+            number = number.substring(2); // убираем HD
+            if (number.length > 9) {
+                number = number.slice(-9); // из 12 цифр берём последние 9
+            }
+        }
+        
+        if (!/^\d+$/.test(number)) {
+            alert('Номер должен содержать только цифры');
+            return;
+        }
+        
+        if (number.length !== 9) {
+            if (!confirm(`Номер ${number} имеет ${number.length} цифр. Обычно 9. Добавить?`)) {
+                return;
+            }
+        }
+        
+        chrome.storage.local.get(['ignoredNumbers'], (result) => {
+            const numbers = result.ignoredNumbers || [];
+            
+            if (numbers.includes(number)) {
+                alert('Этот номер уже добавлен');
+                return;
+            }
+            
+            numbers.push(number);
+            
+            chrome.storage.local.set({ ignoredNumbers: numbers }, () => {
+                elements.ignoreNumberInput.value = '';
+                updateIgnoredNumbersList(numbers);
+                sendToContentScript(numbers);
+                logger.log('✅ Номер добавлен:', number);
+            });
+        });
+    }
+
+    function clearAllIgnoredNumbers() {
+        chrome.storage.local.get(['ignoredNumbers'], (result) => {
+            const numbers = result.ignoredNumbers || [];
+            
+            if (numbers.length === 0) return;
+            
+            if (confirm(`Удалить все ${numbers.length} номеров?`)) {
+                chrome.storage.local.set({ ignoredNumbers: [] }, () => {
+                    updateIgnoredNumbersList([]);
+                    sendToContentScript([]);
+                    logger.log('✅ Список очищен');
+                });
+            }
+        });
+    }
+
+    function saveIgnoreSettings() {
+        closeIgnoreModal();
+    }
+
+    function loadAndDisplayIgnoredNumbers() {
+        chrome.storage.local.get(['ignoredNumbers'], (result) => {
+            const numbers = result.ignoredNumbers || [];
+            updateIgnoredNumbersList(numbers);
+        });
+    }
+
+    function updateIgnoredNumbersList(numbers) {
+        if (!elements.ignoredNumbersList) return;
+        
+        elements.ignoredNumbersList.innerHTML = '';
+        
+        if (numbers.length === 0) {
+            const emptyMsg = document.createElement('div');
+            emptyMsg.style.cssText = 'text-align: center; color: #999; padding: 20px;';
+            emptyMsg.textContent = 'Нет игнорируемых номеров';
+            elements.ignoredNumbersList.appendChild(emptyMsg);
+        } else {
+            numbers.forEach(num => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 8px; margin: 5px 0; background: #f8f9fa; border-radius: 4px;';
+                
+                const span = document.createElement('span');
+                span.style.fontFamily = 'monospace';
+                span.textContent = num; // безопасно от XSS
+                
+                const btn = document.createElement('button');
+                btn.className = 'remove-ignore-btn';
+                btn.dataset.number = num;
+                btn.style.cssText = 'background: none; border: none; color: #dc3545; cursor: pointer; font-size: 18px;';
+                btn.textContent = '×'; // безопасно от XSS
+                
+                item.appendChild(span);
+                item.appendChild(btn);
+                elements.ignoredNumbersList.appendChild(item);
+            });
+            
+            // Обработчики удаления
+            document.querySelectorAll('.remove-ignore-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const numToRemove = btn.dataset.number;
+                    removeIgnoredNumber(numToRemove);
+                });
+            });
+        }
+        
+        if (elements.ignoredCountSpan) {
+            elements.ignoredCountSpan.textContent = numbers.length;
+        }
+    }
+
+    function removeIgnoredNumber(numberToRemove) {
+        chrome.storage.local.get(['ignoredNumbers'], (result) => {
+            const numbers = result.ignoredNumbers || [];
+            const newNumbers = numbers.filter(num => num !== numberToRemove);
+            
+            chrome.storage.local.set({ ignoredNumbers: newNumbers }, () => {
+                updateIgnoredNumbersList(newNumbers);
+                sendToContentScript(newNumbers);
+            });
+        });
+    }
+
+    function sendToContentScript(numbers) {
+        if (!state.currentTab) return;
+        
+        chrome.tabs.sendMessage(state.currentTab.id, {
+            type: 'UPDATE_IGNORED_NUMBERS',
+            numbers: numbers
+        }, (response) => {
+            if (chrome.runtime.lastError) {
+                logger.log('⚠️ Content script не готов');
+            }
+        });
+    }
+
+    // ============ ОСНОВНЫЕ ФУНКЦИИ ============
+    function getCurrentTab() {
+        // Ищем вкладку с 1С по точному URL
+        chrome.tabs.query({ url: 'https://2phoenix.alidi.ru/*' }, (tabs) => {
+            if (tabs && tabs[0]) {
+                state.currentTab = tabs[0];
+                updateStatus();
+            } else {
+                // Если не найдена, пробуем активную вкладку
+                chrome.tabs.query({ active: true, currentWindow: true }, (activeTabs) => {
+                    if (activeTabs && activeTabs[0]) {
+                        state.currentTab = activeTabs[0];
+                        updateStatus();
+                    } else {
+                        setStatus('Откройте страницу 1С', '0', '0', false);
+                    }
+                });
+            }
+        });
+    }
+
+    function sendMessageToContentScript(message) {
+        return new Promise((resolve, reject) => {
+            if (!state.currentTab) {
+                reject(new Error('No active tab'));
+                return;
+            }
+
+            chrome.tabs.sendMessage(state.currentTab.id, message, (response) => {
+                if (chrome.runtime.lastError) {
+                    reject(new Error('Content script not ready'));
+                } else {
+                    resolve(response);
+                }
+            });
+        });
+    }
+
+    function updateStatus() {
+        if (!state.currentTab) {
+            setStatus('Откройте страницу 1С', '0', '0', false);
+            return;
+        }
+
+        sendMessageToContentScript({type: 'GET_STATUS'})
+            .then(response => {
+                if (response && !response.error) {
+                    setStatus(response.status, response.count, response.groupCount, response.isMonitoring);
+                    state.isGroupMonitoringEnabled = response.isGroupMonitoring;
+                    state.notificationType = response.notificationType || 'sound';
+                    state.soundType = response.soundType || 'modern';
+                    state.groupSoundType = response.groupSoundType || 'group_chime';
+                    state.maxEnabled = response.maxEnabled || false;
+                    state.maxConfigured = response.maxConfigured || false;
+                    
+                    updateVoiceStatus(response.voiceAvailable);
+                    
+                    if (response.checkInterval) {
+                        state.checkInterval = response.checkInterval;
+                    }
+                    if (response.notificationCooldown) {
+                        state.notificationCooldown = response.notificationCooldown;
+                    }
+                    
+                    updateGroupMonitoringToggle();
+                    updateCurrentIntervalsDisplay();
+                    updateNightAutoEnableUI();
+                    updateMaxUI();
+                    
+                    state.lastUpdate = new Date();
+                    updateLastNotificationTime();
+                    
+                    if (state.autoRestartEnabled && !response.isMonitoring) {
+                        autoRestartMonitoring();
+                    }
+                } else {
+                    setStatus('Обновите страницу 1С', '0', '0', false);
+                }
+            })
+            .catch(() => {
+                setStatus('Обновите страницу 1С', '0', '0', false);
+            });
+    }
+
+    function setStatus(status, count, groupCount, monitoring) {
+          document.getElementById('footerStatusBar').style.marginBottom = '0px';
+    document.getElementById('footerStatusBar').style.paddingBottom = '0px';
+    document.getElementById('footerStatusBar').style.borderBottom = 'none';
+
+            const container = document.querySelector('.container');
+        const isEmpty = status && status.includes('Обновите') && !state.currentTab;
+        
+        if (container) {
+            if (isEmpty) {
+                container.classList.add('empty-mode');
+            } else {
+                container.classList.remove('empty-mode');
+            }
+        }
+        
+        if (elements.statusText) elements.statusText.textContent = status || 'Неизвестно';
+        
+        const classCount = count || '0';
+        const grpCount = groupCount || '0';
+        
+        if (elements.countText) elements.countText.textContent = classCount;
+        if (elements.groupCountText) elements.groupCountText.textContent = grpCount;
+        
+        // Убираем скелетон при первой загрузке
+        removeSkeleton();
+        
+        // Анимации счётчиков при изменении
+        animateCounterChange('countText', classCount, 'classificationCard');
+        animateCounterChange('groupCountText', grpCount, 'groupCard');
+        
+        // Обновляем счётчик сессии
+        state.sessionTotalRequests++;
+        state.lastCheckTime = Date.now();
+        
+        // При первом включении мониторинга фиксируем начало отсчёта таймера
+        if (monitoring && !state._monitoringStarted) {
+            state._monitoringStarted = true;
+            state.lastCheckTimestamp = Date.now();
+        }
+        
+        // Обновляем историю для sparkline (раз в 5 минут)
+        const classNum = parseInt(classCount) || 0;
+        const grpNum = parseInt(grpCount) || 0;
+        const now = Date.now();
+        if (now - state.lastSparklineRecordTime >= state.sparklineRecordInterval) {
+            state.lastSparklineRecordTime = now;
+            state.classificationHistory.push(classNum);
+            state.groupHistory.push(grpNum);
+            if (state.classificationHistory.length > state.maxHistoryLength) state.classificationHistory.shift();
+            if (state.groupHistory.length > state.maxHistoryLength) state.groupHistory.shift();
+            updateSparklines();
+        }
+        
+        // Обновляем статистику на основе реальных номеров заявок
+        // Вызываем асинхронно, чтобы не блокировать UI
+        updateStatsWithNumbers();
+        
+        // Обновляем таймер
+        updateCheckTimer();
+        
+        // Проверяем порог для toast-уведомления
+        const threshold = state.notificationThreshold || 1;
+        const classDiff = classNum - state.lastNotifiedCount.classification;
+        const grpDiff = grpNum - state.lastNotifiedCount.group;
+        if (classDiff >= threshold && classDiff > 0) {
+            showToast('+' + classDiff + ' новых заявок', 'warning', 2000);
+        }
+        if (grpDiff >= threshold && grpDiff > 0) {
+            showToast('+' + grpDiff + ' новых задач в группах', 'info', 2000);
+        }
+        state.lastNotifiedCount.classification = classNum;
+        state.lastNotifiedCount.group = grpNum;
+        
+        if (elements.statusIndicator) {
+            elements.statusIndicator.className = 'status-indicator ' + (monitoring ? 'active' : 'inactive');
+        }
+        
+        // Обновляем статус-точку
+        const footerDot = document.getElementById('footerStatusDot');
+        if (footerDot) {
+            footerDot.className = 'status-bar-dot' + (status && status.includes('Обновите') ? ' error' : '');
+        }
+        
+        state.isMonitoring = monitoring !== undefined ? monitoring : false;
+        updateButtonIcons();
+        updateMonitoringButtonState();
+        updateFooterSessionInfo();
+    }
+
+    function updateButtonIcons() {
+        if (!elements.toggleMonitor) return;
+        
+        const toggleIcon = elements.toggleMonitor.querySelector('i');
+        const toggleText = elements.toggleMonitor.querySelector('span');
+        
+        if (state.isMonitoring) {
+            toggleIcon.className = 'fas fa-pause';
+            toggleText.textContent = 'Активно';
+            elements.toggleMonitor.classList.add('active');
+        } else {
+            toggleIcon.className = 'fas fa-play';
+            toggleText.textContent = 'Запустить';
+            elements.toggleMonitor.classList.remove('active');
+        }
+    }
+
+    function toggleMonitoring() {
+        if (!state.currentTab) {
+            alert('Сначала откройте страницу 1С');
+            return;
+        }
+
+        sendMessageToContentScript({type: 'TOGGLE_MONITOR'})
+            .then(response => {
+                if (response && !response.error) {
+                    setStatus(response.status, response.count, response.groupCount, response.isMonitoring);
+                    showToast(
+                        response.isMonitoring ? 'Мониторинг запущен' : 'Мониторинг остановлен',
+                        response.isMonitoring ? 'success' : 'warning'
+                    );
+                } else {
+                    alert('Сначала перейдите на страницу 1С и обновите её');
+                }
+            })
+            .catch(() => {
+                alert('Ошибка: Обновите страницу 1С');
+            });
+    }
+
+    // ============ ФУНКЦИИ ОБНОВЛЕНИЯ UI ============
+    function updateSoundInfo() {
+        if (!state.currentTab) return;
+
+        sendMessageToContentScript({type: 'GET_SOUND_INFO'})
+            .then(response => {
+                if (response && !response.error) {
+                    state.soundInfo = response;
+                    state.isSoundEnabled = response.enabled;
+                    state.notificationType = response.notificationType || 'sound';
+                    state.soundType = response.soundType || 'modern';
+                    state.groupSoundType = response.groupSoundType || 'group_chime';
+                    
+                    updateVoiceStatus(response.voiceAvailable);
+                    updateSoundToggle();
+                    
+                    if (!response.enabled && response.timeLeft) {
+                        const minutes = Math.ceil(response.timeLeft / 60000);
+                        const seconds = Math.ceil((response.timeLeft % 60000) / 1000);
+                        
+                        if (elements.soundStatus) {
+                            elements.soundStatus.textContent = minutes > 0 ? `Включится через ${minutes} мин` : `Включится через ${seconds} сек`;
+                            elements.soundStatus.style.color = '#ff9800';
+                        }
+                        
+                        if (state.soundDisableTimer) {
+                            clearTimeout(state.soundDisableTimer);
+                        }
+                        
+                        const updateDelay = Math.min(response.timeLeft, 1000);
+                        if (updateDelay > 0) {
+                            state.soundDisableTimer = setTimeout(() => updateSoundInfo(), updateDelay);
+                        }
+                    }
+                }
+            })
+            .catch(() => {});
+    }
+
+    function updateSoundToggle() {
+        if (!elements.toggleSound) return;
+        
+        elements.toggleSound.checked = state.isSoundEnabled;
+        updateDashboardSoundButton();
+        
+        if (elements.soundStatus) {
+            if (state.isSoundEnabled) {
+                elements.soundStatus.textContent = 'Звук включен';
+                elements.soundStatus.style.color = '#4CAF50';
+            } else {
+                if (state.soundInfo && state.soundInfo.timeLeft) {
+                    const minutes = Math.ceil(state.soundInfo.timeLeft / 60000);
+                    elements.soundStatus.textContent = minutes > 0 ? `Включится через ${minutes} мин` : 'Включится скоро';
+                    elements.soundStatus.style.color = '#ff9800';
+                } else {
+                    elements.soundStatus.textContent = 'Звук выключен';
+                    elements.soundStatus.style.color = '#666';
+                }
+            }
+        }
+    }
+
+    function updateGroupMonitoringToggle() {
+        if (!elements.toggleGroupMonitor) return;
+        
+        elements.toggleGroupMonitor.checked = state.isGroupMonitoringEnabled;
+        
+        if (elements.groupMonitorStatus) {
+            elements.groupMonitorStatus.textContent = state.isGroupMonitoringEnabled ? 'Мониторинг групп активен' : 'Мониторинг групп выключен';
+            elements.groupMonitorStatus.style.color = state.isGroupMonitoringEnabled ? '#2196F3' : '#666';
+        }
+    }
+
+    function updateMaxUI() {
+        if (!elements.toggleMax) return;
+        
+        // Не перезаписываем чекбокс - пользователь сам управляет
+        // Но загружаем текущее состояние
+        if (elements.maxStatus) {
+            if (state.maxEnabled) {
+                if (state.maxConfigured) {
+                    elements.maxStatus.textContent = 'MAX настроен и активен';
+                    elements.maxStatus.style.color = '#4CAF50';
+                } else {
+                    elements.maxStatus.textContent = 'MAX включен, но не настроен';
+                    elements.maxStatus.style.color = '#ff9800';
+                }
+            } else {
+                elements.maxStatus.textContent = 'MAX выключен';
+                elements.maxStatus.style.color = '#666';
+            }
+        }
+        
+        if (elements.maxQuickInfo) {
+            elements.maxQuickInfo.innerHTML = state.maxConfigured ? 'Настройки сохранены' : 'Введите User ID для получения уведомлений';
+        }
+    }
+
+    function updateCurrentIntervalsDisplay() {
+        if (!elements.checkInterval || !elements.notificationCooldown) return;
+        
+        const checkInterval = parseInt(elements.checkInterval.value) || 10000;
+        const cooldown = parseInt(elements.notificationCooldown.value) || 10000;
+        
+        if (elements.currentCheckInterval) elements.currentCheckInterval.textContent = Math.round(checkInterval / 1000);
+        if (elements.currentCooldown) elements.currentCooldown.textContent = Math.round(cooldown / 1000);
+    }
+
+    function updateAutoRestartUI() {
+        if (!elements.toggleAutoRestart) return;
+        
+        elements.toggleAutoRestart.checked = state.autoRestartEnabled;
+        
+        if (elements.autoRestartInterval) {
+            elements.autoRestartInterval.value = state.autoRestartInterval;
+        }
+        
+        if (elements.currentAutoRestartInterval) {
+            elements.currentAutoRestartInterval.textContent = Math.round(state.autoRestartInterval / 1000);
+        }
+        
+        if (elements.autoRestartStatus) {
+            if (state.autoRestartEnabled) {
+                elements.autoRestartStatus.textContent = 'Активно - перезапуск каждые ' + Math.round(state.autoRestartInterval / 1000) + ' сек';
+                elements.autoRestartStatus.style.color = '#2563eb';
+            } else {
+                elements.autoRestartStatus.textContent = 'Не активно';
+                elements.autoRestartStatus.style.color = '#666';
+            }
+        }
+    }
+
+    function updateNightAutoEnableUI() {
+        if (!elements.toggleNightAutoEnable) return;
+        
+        elements.toggleNightAutoEnable.checked = state.nightAutoEnableEnabled;
+        
+        if (elements.nightAutoEnableStatus) {
+            if (state.nightAutoEnableEnabled) {
+                elements.nightAutoEnableStatus.textContent = 'Авто-включение активно (22:00-08:00)';
+                elements.nightAutoEnableStatus.style.color = '#4CAF50';
+                updateNextNightEnableTime();
+            } else {
+                elements.nightAutoEnableStatus.textContent = 'Авто-включение выключено';
+                elements.nightAutoEnableStatus.style.color = '#666';
+                if (elements.nextNightEnableTime) elements.nextNightEnableTime.textContent = '';
+            }
+        }
+    }
+
+    function updateVoiceStatus(available) {
+        state.voiceAvailable = available;
+        
+        if (elements.voiceStatusModal) {
+            if (available) {
+                elements.voiceStatusModal.innerHTML = '<i class="fas fa-info-circle"></i><span>Голосовая система готова к работе</span>';
+                elements.voiceStatusModal.className = 'voice-status-modal';
+            } else {
+                elements.voiceStatusModal.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Голосовая система недоступна</span>';
+                elements.voiceStatusModal.className = 'voice-status-modal error';
+                
+                if (state.modalState.notificationType === 'voice') {
+                    updateModalNotificationType('sound');
+                }
+            }
+        }
+    }
+
+    function updateLastNotificationTime() {
+        if (!state.lastUpdate || !elements.lastNotification) return;
+        
+        const now = new Date();
+        const diff = Math.floor((now - state.lastUpdate) / 1000);
+        
+        let text = '—';
+        if (diff < 60) {
+            text = `${diff} сек назад`;
+        } else if (diff < 3600) {
+            text = `${Math.floor(diff / 60)} мин назад`;
+        } else {
+            text = `${Math.floor(diff / 3600)} ч назад`;
+        }
+        
+        elements.lastNotification.textContent = text;
+    }
+
+    // --- Обновление информации о сессии в футере ---
+    function updateFooterSessionInfo() {
+        const el = document.getElementById('footerSessionInfo');
+        if (!el) return;
+        
+        const elapsed = Date.now() - state.sessionStart;
+        const minutes = Math.floor(elapsed / 60000);
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        
+        let timeStr;
+        if (hours > 0) {
+            timeStr = hours + ':' + mins.toString().padStart(2, '0');
+        } else {
+            timeStr = mins + ':00';
+        }
+        
+        const reqs = state.sessionTotalRequests;
+        el.textContent = 'Сессия: ' + reqs + ' запросов • ' + timeStr;
+    }
+
+    function updateNextNightEnableTime() {
+        if (!state.nightAutoEnableEnabled || !elements.nextNightEnableTime) return;
+        
+        const now = new Date();
+        const nextHour = (now.getHours() + 1) % 24;
+        const isNightTime = nextHour >= 22 || nextHour < 8;
+        
+        if (isNightTime) {
+            elements.nextNightEnableTime.textContent = `След. включение: ${nextHour.toString().padStart(2, '0')}:00`;
+        } else {
+            elements.nextNightEnableTime.textContent = 'След. включение: только ночью';
+        }
+    }
+
+    // ============ ОБРАБОТЧИКИ СОБЫТИЙ ============
+    function toggleSoundHandler() {
+        if (state.isSoundEnabled) {
+            sendMessageToContentScript({type: 'SET_SOUND_SETTING', soundEnabled: false})
+                .then(response => {
+                    if (response && response.success) {
+                        state.isSoundEnabled = false;
+                        if (response.reason === 'night_time_limit') {
+                            showToast('Звук отключён на ' + response.duration + ' мин', 'warning');
+                        } else {
+                            showToast('Звук выключен', 'warning');
+                        }
+                        updateSoundInfo();
+                        updateSoundToggle();
+                        updateSoundSectionBadge();
+                    }
+                })
+                .catch(() => alert('Ошибка: Обновите страницу 1С'));
+        } else {
+            sendMessageToContentScript({type: 'ENABLE_SOUND'})
+                .then(response => {
+                    if (response && response.success) {
+                        state.isSoundEnabled = true;
+                        showToast('Звук включён', 'success');
+                        updateSoundToggle();
+                        updateSoundInfo();
+                        updateSoundSectionBadge();
+                        if (state.soundDisableTimer) {
+                            clearTimeout(state.soundDisableTimer);
+                            state.soundDisableTimer = null;
+                        }
+                    }
+                })
+                .catch(() => alert('Ошибка: Обновите страницу 1С'));
+        }
+    }
+
+    function toggleSoundFromDashboard() {
+        if (elements.toggleSound) {
+            elements.toggleSound.checked = !elements.toggleSound.checked;
+            elements.toggleSound.dispatchEvent(new Event('change'));
+        }
+    }
+
+    function updateDashboardSoundButton() {
+        const btn = elements.dashboardToggleSound;
+        if (!btn) return;
+        const icon = btn.querySelector('i');
+        if (state.isSoundEnabled) {
+            icon.className = 'fas fa-volume-up';
+        } else {
+            icon.className = 'fas fa-volume-mute';
+        }
+    }
+
+    function toggleGroupMonitoringHandler() {
+        state.isGroupMonitoringEnabled = !state.isGroupMonitoringEnabled;
+        updateGroupMonitoringToggle();
+        
+        if (!state.currentTab) {
+            alert('Сначала откройте страницу 1С');
+            return;
+        }
+
+        sendMessageToContentScript({type: 'TOGGLE_GROUP_MONITOR'})
+            .then(response => {
+                if (response && !response.error) {
+                    setStatus(response.status, response.count, response.groupCount, response.isMonitoring);
+                    showToast(
+                        state.isGroupMonitoringEnabled ? 'Мониторинг групп включён' : 'Мониторинг групп выключен',
+                        state.isGroupMonitoringEnabled ? 'success' : 'info'
+                    );
+                }
+            })
+            .catch(() => alert('Ошибка: Обновите страницу 1С'));
+    }
+
+    function toggleAutoRestartHandler() {
+        state.autoRestartEnabled = !state.autoRestartEnabled;
+        chrome.storage.local.set({ autoRestartEnabled: state.autoRestartEnabled });
+        
+        if (state.autoRestartEnabled) {
+            startAutoRestartTimer();
+            showToast('Авто-перезапуск активирован', 'success');
+        } else {
+            stopAutoRestartTimer();
+            showToast('Авто-перезапуск отключён', 'warning');
+        }
+        
+        updateAutoRestartUI();
+    }
+
+    function updateAutoRestartInterval() {
+        const interval = parseInt(elements.autoRestartInterval.value) || 30000;
+        state.autoRestartInterval = interval;
+        chrome.storage.local.set({ autoRestartInterval: interval });
+        
+        if (elements.currentAutoRestartInterval) {
+            elements.currentAutoRestartInterval.textContent = Math.round(interval / 1000);
+        }
+        
+        if (state.autoRestartEnabled) {
+            startAutoRestartTimer();
+        }
+    }
+
+    function toggleNightAutoEnableHandler() {
+        const enabled = elements.toggleNightAutoEnable.checked;
+        
+        if (!state.currentTab) {
+            alert('Сначала откройте страницу 1С');
+            elements.toggleNightAutoEnable.checked = !enabled;
+            return;
+        }
+        
+        sendMessageToContentScript({
+            type: 'TOGGLE_NIGHT_AUTO_ENABLE',
+            enabled: enabled
+        })
+        .then(response => {
+            if (response && response.success !== false) {
+                state.nightAutoEnableEnabled = enabled;
+                chrome.storage.local.set({ nightAutoEnableEnabled: enabled });
+                updateNightAutoEnableUI();
+                showToast(enabled ? 'Ночной режим включён' : 'Ночной режим отключён', enabled ? 'success' : 'info');
+            } else {
+                elements.toggleNightAutoEnable.checked = !enabled;
+            }
+        })
+        .catch(() => {
+            elements.toggleNightAutoEnable.checked = !enabled;
+            alert('Ошибка: Обновите страницу 1С');
+        });
+    }
+
+    function startAutoRestartTimer() {
+        if (state.autoRestartTimer) {
+            clearInterval(state.autoRestartTimer);
+        }
+        
+        if (!state.autoRestartEnabled) return;
+        
+        logger.log('🔁 Авто-перезапуск запущен:', state.autoRestartInterval, 'мс');
+        
+        setTimeout(() => autoRestartMonitoring(), 1000);
+        
+        state.autoRestartTimer = setInterval(() => autoRestartMonitoring(), state.autoRestartInterval);
+    }
+
+    function stopAutoRestartTimer() {
+        if (state.autoRestartTimer) {
+            clearInterval(state.autoRestartTimer);
+            state.autoRestartTimer = null;
+            logger.log('🔁 Авто-перезапуск остановлен');
+        }
+    }
+
+    async function autoRestartMonitoring() {
+        if (!state.currentTab || !state.autoRestartEnabled) return;
+        
+        state.autoRestartCheckCount++;
+        
+        try {
+            const response = await sendMessageToContentScript({type: 'GET_STATUS'});
+            
+            if (response && !response.error && !response.isMonitoring) {
+                logger.log('🔁 Авто-перезапуск: включаем мониторинг');
+                
+                const toggleResponse = await sendMessageToContentScript({type: 'TOGGLE_MONITOR'});
+                
+                if (toggleResponse && toggleResponse.isMonitoring) {
+                    logger.log('✅ Мониторинг включен');
+                    setStatus(toggleResponse.status, toggleResponse.count, toggleResponse.groupCount, true);
+                    showNotification('Мониторинг автоматически включен');
+                }
+            }
+        } catch (error) {
+            // Content script not ready — не ошибка, просто пропускаем
+            if (!error.message.includes('Content script not ready')) {
+                logger.error('🔁 Ошибка авто-перезапуска:', error);
+            }
+        }
+    }
+
+    function updateSoundVolume() {
+        const volume = parseInt(elements.soundVolumeSlider.value);
+        if (elements.soundVolumeValue) elements.soundVolumeValue.textContent = volume + '%';
+        state.soundVolume = volume;
+        
+        // Обновляем индикатор уровня громкости
+        updateVolumeIndicators('soundVolumeSlider', '.volume-level-indicator[data-for="sound"] span');
+        
+        chrome.storage.local.set({ soundVolumeLevel: volume });
+        
+        if (!state.currentTab) return;
+        
+        sendMessageToContentScript({
+            type: 'SET_VOLUME',
+            volume: volume / 100
+        }).catch(() => {});
+    }
+
+    function updateGroupVolume() {
+        const volume = parseInt(elements.groupVolumeSlider.value);
+        if (elements.groupVolumeValue) elements.groupVolumeValue.textContent = volume + '%';
+        state.groupVolume = volume;
+        
+        updateVolumeIndicators('groupVolumeSlider', '.volume-level-indicator[data-for="group"] span');
+        
+        chrome.storage.local.set({ groupVolumeLevel: volume });
+        
+        if (!state.currentTab) return;
+        
+        sendMessageToContentScript({
+            type: 'SET_GROUP_VOLUME',
+            volume: volume / 100
+        }).catch(() => {});
+    }
+
+    function updateNotificationThreshold() {
+        const val = parseInt(elements.notificationThreshold.value) || 1;
+        state.notificationThreshold = Math.max(1, Math.min(50, val));
+        elements.notificationThreshold.value = state.notificationThreshold;
+        chrome.storage.local.set({ notificationThreshold: state.notificationThreshold });
+        showToast('Порог оповещения: ' + state.notificationThreshold, 'info', 1500);
+    }
+
+    function testSoundAlert() {
+        if (!state.isSoundEnabled) {
+            alert('Сначала включите звук!');
+            return;
+        }
+
+        if (!state.currentTab) {
+            alert('Сначала откройте страницу 1С');
+            return;
+        }
+
+        sendMessageToContentScript({type: 'TEST_SOUND'})
+            .catch(() => alert('Ошибка теста звука. Обновите страницу 1С.'));
+    }
+
+    function testGroupSoundAlert() {
+        if (!state.isSoundEnabled) {
+            alert('Сначала включите звук!');
+            return;
+        }
+
+        if (!state.currentTab) {
+            alert('Сначала откройте страницу 1С');
+            return;
+        }
+
+        sendMessageToContentScript({type: 'TEST_GROUP_SOUND'})
+            .catch(() => alert('Ошибка теста звука. Обновите страницу 1С.'));
+    }
+
+    function applyIntervals() {
+        const checkInterval = parseInt(elements.checkInterval.value);
+        const notificationCooldown = parseInt(elements.notificationCooldown.value);
+        
+        if (!checkInterval || !notificationCooldown) {
+            alert('Пожалуйста, выберите корректные интервалы');
+            return;
+        }
+
+        if (!state.currentTab) {
+            alert('Сначала откройте страницу 1С');
+            return;
+        }
+
+        chrome.storage.local.set({
+            checkInterval: checkInterval,
+            notificationCooldown: notificationCooldown
+        });
+
+        sendMessageToContentScript({
+            type: 'SET_INTERVALS',
+            checkInterval: checkInterval,
+            notificationCooldown: notificationCooldown
+        })
+        .then(response => {
+            if (response && response.success) {
+                state.checkInterval = checkInterval;
+                state.notificationCooldown = notificationCooldown;
+                updateCurrentIntervalsDisplay();
+                const ci = checkInterval / 1000;
+                const nc = notificationCooldown / 1000;
+                showToast('Интервалы: проверка ' + ci + 'с, задержка ' + nc + 'с', 'success');
+            } else {
+                showToast('Ошибка применения интервалов', 'error');
+            }
+        })
+        .catch(() => showToast('Ошибка: Обновите страницу 1С', 'error'));
+    }
+
+    function debugNumbersHandler() {
+        if (!state.currentTab) {
+            alert('Сначала откройте страницу 1С');
+            return;
+        }
+
+        sendMessageToContentScript({type: 'DEBUG_NUMBERS'})
+            .then(() => {
+                alert('Отладочная информация в консоли (F12)');
+            })
+            .catch(() => alert('Ошибка: Обновите страницу 1С'));
+    }
+
+    async function updateIntervalsFromContentScript() {
+        if (!state.currentTab) return;
+        
+        try {
+            const response = await sendMessageToContentScript({type: 'GET_INTERVALS'});
+            if (response && !response.error) {
+                state.checkInterval = response.checkInterval || 10000;
+                state.notificationCooldown = response.notificationCooldown || 10000;
+            }
+        } catch (error) {}
+    }
+
+    // ============ НАСТРОЙКИ ЗВУКА (МОДАЛЬНОЕ ОКНО) ============
+    function showSoundSettings() {
+        state.modalState = {
+            notificationType: state.notificationType,
+            soundType: state.soundType,
+            groupSoundType: state.groupSoundType,
+            voiceVolume: state.voiceVolume
+        };
+        
+        updateModalUI();
+        
+        if (elements.soundSettingsModal) {
+            showModal(elements.soundSettingsModal);
+        }
+    }
+
+    function updateModalUI() {
+        if (!elements.soundSettingsModal) return;
+        
+        if (elements.typeSoundModal) {
+            elements.typeSoundModal.checked = state.modalState.notificationType === 'sound';
+        }
+        if (elements.typeVoiceModal) {
+            elements.typeVoiceModal.checked = state.modalState.notificationType === 'voice';
+        }
+        
+        document.querySelectorAll('.type-option-modal').forEach(option => {
+            if (option.dataset.type === state.modalState.notificationType) {
+                option.classList.add('active');
+            } else {
+                option.classList.remove('active');
+            }
+        });
+        
+        if (elements.voiceVolumeSliderModal) {
+            elements.voiceVolumeSliderModal.value = state.modalState.voiceVolume;
+        }
+        if (elements.voiceVolumeValueModal) {
+            elements.voiceVolumeValueModal.textContent = state.modalState.voiceVolume + '%';
+        }
+        
+        if (elements.voiceVolumeSection) {
+            elements.voiceVolumeSection.style.display = state.modalState.notificationType === 'voice' ? 'block' : 'none';
+        }
+        if (elements.soundSelectionSection) {
+            elements.soundSelectionSection.style.display = state.modalState.notificationType === 'voice' ? 'none' : 'block';
+            
+            if (state.modalState.notificationType !== 'voice') {
+                renderSoundOptionsModal();
+            }
+        }
+    }
+
+    function updateModalNotificationType(type) {
+        if (type === 'voice' && !state.voiceAvailable) {
+            alert('Голосовая система недоступна');
+            type = 'sound';
+        }
+        
+        state.modalState.notificationType = type;
+        updateModalUI();
+    }
+
+    function renderSoundOptionsModal() {
+        if (!elements.classificationSoundsModal || !elements.groupSoundsModal) return;
+        
+        elements.classificationSoundsModal.innerHTML = '';
+        elements.groupSoundsModal.innerHTML = '';
+        
+        state.soundOptions.forEach(sound => {
+            const el = createSoundOptionElement(sound, 'classification');
+            elements.classificationSoundsModal.appendChild(el);
+        });
+        
+        state.groupSoundOptions.forEach(sound => {
+            const el = createSoundOptionElement(sound, 'group');
+            elements.groupSoundsModal.appendChild(el);
+        });
+        
+        updateActiveSoundSelections();
+        
+        document.querySelectorAll('.sound-option-modal').forEach(option => {
+            option.addEventListener('click', handleSoundOptionClick);
+        });
+        
+        document.querySelectorAll('.btn-test-sound-modal').forEach(button => {
+            button.addEventListener('click', handleTestSoundClick);
+        });
+    }
+
+    function createSoundOptionElement(sound, type) {
+        const div = document.createElement('div');
+        div.className = 'sound-option-modal';
+        div.dataset.type = sound.id;
+        div.dataset.for = type;
+        div.title = sound.description;
+        
+        const iconClass = getSoundIconClass(sound.id);
+        
+        div.innerHTML = `
+            <div class="sound-option-icon-modal"><i class="${iconClass}"></i></div>
+            <div class="sound-option-title-modal">${sound.name}</div>
+        `;
+        
+        return div;
+    }
+
+    function getSoundIconClass(soundId) {
+        const iconMap = {
+            'classic': 'fas fa-bell',
+            'modern': 'fas fa-bolt',
+            'alert': 'fas fa-exclamation-triangle',
+            'soft': 'fas fa-volume-down',
+            'game': 'fas fa-gamepad',
+            'office': 'fas fa-briefcase',
+            'group_chime': 'fas fa-bell',
+            'group_notification': 'fas fa-users'
+        };
+        return iconMap[soundId] || 'fas fa-music';
+    }
+
+    function updateActiveSoundSelections() {
+        document.querySelectorAll('.sound-option-modal').forEach(option => {
+            option.classList.remove('active');
+        });
+        
+        const classOpt = document.querySelector(`.sound-option-modal[data-type="${state.modalState.soundType}"][data-for="classification"]`);
+        const groupOpt = document.querySelector(`.sound-option-modal[data-type="${state.modalState.groupSoundType}"][data-for="group"]`);
+        
+        if (classOpt) classOpt.classList.add('active');
+        if (groupOpt) groupOpt.classList.add('active');
+    }
+
+    function handleSoundOptionClick(event) {
+        const option = event.currentTarget;
+        const soundType = option.dataset.type;
+        const soundFor = option.dataset.for;
+        
+        if (soundFor === 'classification') {
+            state.modalState.soundType = soundType;
+        } else if (soundFor === 'group') {
+            state.modalState.groupSoundType = soundType;
+        }
+        
+        updateActiveSoundSelections();
+        
+        if (!state.currentTab) {
+            showToast('Откройте страницу 1С для preview звука', 'warning');
+            return;
+        }
+        
+        const icon = option.querySelector('.sound-option-icon-modal i');
+        if (icon) {
+            const origClass = icon.className;
+            icon.className = 'fas fa-volume-up';
+            setTimeout(() => { icon.className = origClass; }, 600);
+        }
+        
+        if (soundFor === 'classification') {
+            sendMessageToContentScript({type: 'TEST_SOUND', soundType}).catch(() => {});
+        } else {
+            sendMessageToContentScript({type: 'TEST_GROUP_SOUND', soundType}).catch(() => {});
+        }
+    }
+
+    function handleTestSoundClick(event) {
+        event.stopPropagation();
+        const button = event.currentTarget;
+        const soundFor = button.dataset.for;
+        const soundId = button.dataset.sound;
+        
+        // Визуальная индикация воспроизведения
+        const originalContent = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-volume-up"></i>';
+        button.style.opacity = '0.7';
+        
+        setTimeout(() => {
+            button.innerHTML = originalContent;
+            button.style.opacity = '1';
+        }, 1000);
+        
+        if (!state.currentTab) {
+            alert('Сначала откройте страницу 1С');
+            return;
+        }
+
+        if (soundFor === 'classification') {
+            sendMessageToContentScript({
+                type: 'TEST_SOUND',
+                soundType: soundId
+            }).catch(() => {});
+        } else if (soundFor === 'group') {
+            sendMessageToContentScript({
+                type: 'TEST_GROUP_SOUND',
+                soundType: soundId
+            }).catch(() => {});
+        }
+    }
+
+    function saveSoundSettings() {
+        state.modalState.voiceVolume = parseInt(elements.voiceVolumeSliderModal.value);
+        
+        state.notificationType = state.modalState.notificationType;
+        state.soundType = state.modalState.soundType;
+        state.groupSoundType = state.modalState.groupSoundType;
+        state.voiceVolume = state.modalState.voiceVolume;
+        
+        chrome.storage.local.set({
+            notificationType: state.notificationType,
+            soundType: state.soundType,
+            groupSoundType: state.groupSoundType,
+            voiceVolumeLevel: state.voiceVolume
+        });
+        
+        if (state.currentTab) {
+            sendMessageToContentScript({
+                type: 'SET_NOTIFICATION_TYPE',
+                notificationType: state.notificationType
+            }).catch(() => {});
+            
+            if (state.notificationType === 'sound') {
+                sendMessageToContentScript({type: 'SET_SOUND_TYPE', soundType: state.soundType}).catch(() => {});
+                sendMessageToContentScript({type: 'SET_GROUP_SOUND_TYPE', soundType: state.groupSoundType}).catch(() => {});
+            }
+            
+            sendMessageToContentScript({
+                type: 'SET_VOICE_VOLUME',
+                volume: state.voiceVolume / 100
+            }).catch(() => {});
+        }
+        
+        // Toast-уведомление
+        showToast('Настройки звука сохранены', 'success');
+        
+        // Закрываем модалку с задержкой для показа тоста
+        setTimeout(() => {
+            if (elements.soundSettingsModal) hideModal(elements.soundSettingsModal);
+        }, 500);
+        
+        logger.log('⚙️ Настройки звука сохранены');
+    }
+
+    // ============ MAX ============
+    function toggleMaxHandler() {
+        const enabled = elements.toggleMax.checked;
+        logger.log('🔧 toggleMaxHandler: enabled =', enabled);
+        
+        // Сначала обновляем UI
+        updateMaxUI();
+        
+        // Сохраняем настройку
+        chrome.storage.local.set({ maxEnabled: enabled }, () => {
+            state.maxEnabled = enabled;
+            logger.log('🔧 MAX saved to storage:', enabled);
+            
+            // Также отправляем в content script чтобы обновить maxModule
+            if (state.currentTab) {
+                chrome.tabs.sendMessage(state.currentTab.id, {
+                    type: 'UPDATE_MAX_ENABLED',
+                    enabled: enabled
+                }, (response) => {
+                    logger.log('🔧 Content script responded:', response);
+                });
+            }
+        });
+        
+        // Проверяем настройки - если не настроено, показываем предупреждение
+        if (enabled && !state.maxConfigured) {
+            showToast('Введите ваш User ID в поле ниже', 'warning');
+        }
+        
+        logger.log('🔧 MAX enabled:', enabled);
+    }
+         
+    // ============ ТЕСТОВОЕ СООБЩЕНИЕ MAX ============
+    async function sendTestMaxMessage() {
+        const userId = state.maxSettings.userId;
+        
+        if (!userId) {
+            showToast('Сначала введите ваш User ID', 'error');
+            return;
+        }
+
+        try {
+            const response = await new Promise(resolve => {
+                chrome.runtime.sendMessage({
+                    type: 'MAX_API_SEND_MESSAGE',
+                    botToken: state.maxSettings.botToken || (typeof CONFIG !== 'undefined' ? CONFIG.MAX?.BOT_TOKEN : ''),
+                    userId: userId,
+                    text: `✅ Тест 1C Монитора\n\nЕсли вы видите это — MAX настроен правильно!\n⏰ ${new Date().toLocaleTimeString('ru-RU')}`
+                }, resolve);
+            });
+            
+            if (response && response.success) {
+                showToast('Тестовое сообщение отправлено!', 'success');
+            } else {
+                showToast('Ошибка: ' + (response?.error || 'Неизвестная ошибка'), 'error');
+            }
+        } catch (error) {
+            showToast('Ошибка: ' + error.message, 'error');
+        }
+    }
+
+    function saveMaxUserId() {
+        const userId = elements.maxUserId.value.trim();
+        if (!userId) return;
+        chrome.storage.local.set({ maxUserId: userId }, () => {
+            state.maxSettings.userId = userId;
+            state.maxConfigured = !!userId;
+            state.maxModalState.userId = userId;
+            state.maxModalState.userIdObtained = !!userId;
+            updateMaxUI();
+            logger.log('🔧 User ID сохранён:', userId);
+            if (state.currentTab) {
+                chrome.tabs.sendMessage(state.currentTab.id, {
+                    type: 'UPDATE_MAX_USER_ID',
+                    userId: userId
+                }, () => {});
+            }
+        });
+    }
+    function hideMaxSettings() {
+        if (!elements.maxSettingsModal) return;
+        elements.maxSettingsModal.classList.remove('show');
+        setTimeout(() => {
+            elements.maxSettingsModal.style.display = 'none';
+        }, 300);
+    }
+
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `auto-restart-notification ${type}`;
+        notification.innerHTML = `
+            <div class="auto-restart-status-dot" style="background: ${type === 'success' ? '#2563eb' : '#f59e0b'}"></div>
+            <span>${message}</span>
+        `;
+        
+        if (elements.nightAutoEnableStatus) {
+            const parent = elements.nightAutoEnableStatus.parentNode;
+            parent.insertBefore(notification, elements.nightAutoEnableStatus);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+    }
+
+    // ============ ЛОГИ ============
+    async function updateLogsInfo() {
+        if (!elements.logsInfo) return;
+        try {
+            const logs = await logger.getAll();
+            const count = logs.length;
+            const sizeBytes = new Blob([logs.join('\n')]).size;
+            const sizeKb = (sizeBytes / 1024).toFixed(1);
+            elements.logsInfo.textContent = count > 0
+                ? `${count} записей (${sizeKb} КБ)`
+                : 'Логи пусты';
+        } catch (_) {
+            elements.logsInfo.textContent = '';
+        }
+    }
+
+    async function downloadLogs() {
+        try {
+            const success = await logger.download();
+            if (success) {
+                showToast('Логи сохранены', 'success');
+            } else {
+                showToast('Логи пусты — нечего скачивать', 'warning');
+            }
+        } catch (err) {
+            showToast('Ошибка скачивания логов', 'error');
+        }
+    }
+
+async function clearLogs() {
+        if (!confirm('Очистить все логи?')) return;
+        try {
+            await logger.clear();
+            showToast('Логи очищены', 'success');
+            await updateLogsInfo();
+        } catch (err) {
+            showToast('Ошибка очистки логов', 'error');
+        }
+    }
+    
+    // ============ ОТПРАВКА СТАТИСТИКИ В MAX ============
+    async function sendCurrentStatsToMax() {
+        if (!elements.statsSendStatus || !elements.sendStatsToMax) return;
+        
+        elements.statsSendStatus.textContent = 'Отправка...';
+        elements.statsSendStatus.style.color = 'var(--warning)';
+        
+        try {
+            const result = await new Promise(resolve => {
+                chrome.runtime.sendMessage({ type: 'SHIFT_SEND_REPORT' }, resolve);
+            });
+            
+            if (result && result.success) {
+                elements.statsSendStatus.textContent = '✓ Отправлено!';
+                elements.statsSendStatus.style.color = 'var(--success)';
+                showToast('Статистика отправлена в MAX', 'success');
+            } else {
+                elements.statsSendStatus.textContent = 'Ошибка: ' + (result?.error || ' неизвестна');
+                elements.statsSendStatus.style.color = 'var(--error)';
+                showToast('Ошибка отправки: ' + (result?.error || 'неизвестна'), 'error');
+            }
+        } catch (err) {
+            elements.statsSendStatus.textContent = 'Ошибка: ' + err.message;
+            elements.statsSendStatus.style.color = 'var(--error)';
+            showToast('Ошибка отправки', 'error');
+        }
+        
+        setTimeout(() => {
+            if (elements.statsSendStatus) {
+                elements.statsSendStatus.textContent = '';
+            }
+        }, 5000);
+    }
+    
+    async function sendMonthlyStatsToMax() {
+        if (!elements.statsSendStatus || !elements.sendMonthlyStatsToMax) return;
+        
+        elements.statsSendStatus.textContent = 'Отправка месяца...';
+        elements.statsSendStatus.style.color = 'var(--warning)';
+        
+        try {
+            const result = await new Promise(resolve => {
+                chrome.runtime.sendMessage({ type: 'SHIFT_SEND_MONTHLY_REPORT' }, resolve);
+            });
+            
+            if (result && result.success) {
+                elements.statsSendStatus.textContent = '✓ Месяц отправлен!';
+                elements.statsSendStatus.style.color = 'var(--success)';
+                showToast('Месячная статистика отправлена в MAX', 'success');
+            } else {
+                elements.statsSendStatus.textContent = 'Ошибка: ' + (result?.error || ' неизвестна');
+                elements.statsSendStatus.style.color = 'var(--error)';
+                showToast('Ошибка отправки: ' + (result?.error || 'неизвестна'), 'error');
+            }
+        } catch (err) {
+            elements.statsSendStatus.textContent = 'Ошибка: ' + err.message;
+            elements.statsSendStatus.style.color = 'var(--error)';
+            showToast('Ошибка отправки', 'error');
+        }
+        
+        setTimeout(() => {
+            if (elements.statsSendStatus) {
+                elements.statsSendStatus.textContent = '';
+            }
+        }, 5000);
+    }
+    
+    // ============ ОБНОВЛЕНИЕ ============
+    function applyUpdate() {
+        var extFolder = prompt('Введите путь к папке расширения:');
+        
+        if (!extFolder) {
+            showToast('Нужен путь к папке!', 'error', 3000);
+            return;
+        }
+        
+        var githubBase = 'https://raw.githubusercontent.com/sergeyyakudzo-cmd/softupdate/main/1c-notification-extension/';
+        
+        var batContent = window.generateUpdateBat(extFolder, githubBase);
+        
+        if (!batContent) {
+            showToast('Ошибка генерации!', 'error', 3000);
+            return;
+        }
+        
+        var blob = new Blob([batContent], { type: 'text/plain;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'update.bat';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('update.bat скачан!', 'success', 5000);
+    }
+
+    // Подключаем обработчик
+    function setupUpdateHandlers() {
+        // ...существующий код...
+        if (elements.applyUpdate) {
+            elements.applyUpdate.onclick = applyUpdate;
+        }
+    }
+
+    // Запуск инициализации
+    initialize();
+    logger.logModuleLoad('popup.js');
+});
