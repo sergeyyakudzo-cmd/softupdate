@@ -1,1 +1,0 @@
-!function(){const n={MAX:{BOT_TOKEN:""},UPDATE:{GITHUB_BASE:"https://raw.githubusercontent.com/sergeyyakudzo-cmd/softupdate/main/1c-notification-extension/",EXTENSION_FOLDER:""}};"undefined"!=typeof self&&"undefined"==typeof window&&(self.CONFIG=n),"undefined"!=typeof window&&(window.CONFIG={MAX:{},UPDATE:n.UPDATE})}();
