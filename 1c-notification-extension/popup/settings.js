@@ -243,8 +243,12 @@ function setupUpdateHandlers() {
         elements.checkUpdate.addEventListener('click', () => {
             el.textContent = 'Проверяю на GitHub...';
             const currentVersion = 'v' + chrome.runtime.getManifest().version;
-            fetch('https://raw.githubusercontent.com/sergeyyakudzo-cmd/softupdate/main/1c-notification-extension/version.txt')
-                .then(r => r.text())
+            const baseUrl = window.CONFIG?.UPDATE?.GITHUB_BASE || 'https://raw.githubusercontent.com/sergeyyakudzo-cmd/softupdate/main/1c-notification-extension/';
+            fetch(baseUrl + 'version.txt')
+                .then(r => {
+                    if (!r.ok) throw { status: r.status };
+                    return r.text();
+                })
                 .then(ver => {
                     ver = ver.trim();
                     const cur = currentVersion.replace('v', '').trim();
@@ -261,7 +265,10 @@ function setupUpdateHandlers() {
                     else if (cur === git) el.innerHTML = '<span style="color:#28a745;">' + currentVersion + '</span> = <span style="color:#28a745;">' + ver + ' (актуально)</span>';
                     else el.innerHTML = '<span style="color:#28a745;">' + currentVersion + '</span> → <span style="color:#28a745;">' + ver + '</span>';
                 })
-                .catch(() => { el.textContent = 'GitHub недоступен'; });
+                .catch(err => {
+                    if (err && err.status === 404) el.textContent = 'Файл version.txt не найден на GitHub (404)';
+                    else el.textContent = 'GitHub недоступен (' + (err && err.status ? 'HTTP ' + err.status : 'сеть') + ')';
+                });
         });
     }
 

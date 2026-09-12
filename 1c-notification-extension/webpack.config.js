@@ -68,6 +68,15 @@ module.exports = (env, argv) => {
                     },
                 ],
             }),
+            new CopyPlugin({
+                patterns: [
+                    {
+                        from: 'manifest.json',
+                        to: 'version.txt',
+                        transform: (content) => JSON.parse(content.toString()).version,
+                    },
+                ],
+            }),
         ],
 
         resolve: {
