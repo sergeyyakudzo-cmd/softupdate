@@ -94,8 +94,7 @@ const elements = {
     updateStatus: $id('updateStatus'),
     extensionFolder: $input('extensionFolder'),
 
-    sendStatsToMax: $id('sendStatsToMax'),
-    sendMonthlyStatsToMax: $id('sendMonthlyStatsToMax'),
+    openReport: $id('openReport'),
     statsSendStatus: $id('statsSendStatus'),
 };
 

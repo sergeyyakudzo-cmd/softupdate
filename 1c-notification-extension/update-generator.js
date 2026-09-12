@@ -4,7 +4,8 @@ function generateUpdateBat(extFolder, githubBase) {
         'background.js', 'content.js', 'popup.js', 'popup.html',
         'popup.css', 'popup-animations.css',
         'manifest.json', 'config.js', 'logger.js', 'utils.js', 'max.js',
-        'shared/constants.js', 'update-generator.js'
+        'shared/constants.js', 'update-generator.js',
+        'report/report.html', 'report/report.js', 'report/chart.umd.js'
     ];
 
     let bat = '\uFEFF@echo off\r\nchcp 65001 >nul\r\n';

@@ -19,8 +19,7 @@ import {
     setupIgnoreEventListeners, showIgnoreModal
 } from './ignore.js';
 import {
-    loadMaxSettings, updateMaxUI, toggleMaxHandler, saveMaxUserId, sendTestMaxMessage,
-    sendCurrentStatsToMax, sendMonthlyStatsToMax
+    loadMaxSettings, updateMaxUI, toggleMaxHandler, saveMaxUserId, sendTestMaxMessage
 } from './max.js';
 import {
     updateAutoRestartUI, updateAutoTakeUI, updateNightAutoEnableUI, updateCurrentIntervalsDisplay,
@@ -128,8 +127,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         updateLogsInfo();
 
-        if (elements.sendStatsToMax) elements.sendStatsToMax.addEventListener('click', sendCurrentStatsToMax);
-        if (elements.sendMonthlyStatsToMax) elements.sendMonthlyStatsToMax.addEventListener('click', sendMonthlyStatsToMax);
+        if (elements.openReport) elements.openReport.addEventListener('click', () => {
+            chrome.tabs.create({ url: chrome.runtime.getURL('report/report.html') });
+        });
 
         document.querySelectorAll('.chart-toggle-btn').forEach(btn => {
             btn.addEventListener('click', () => {

@@ -66,18 +66,4 @@ function sendTestMaxMessage() {
         .catch(() => showToast('Ошибка отправки', 'error'));
 }
 
-function sendCurrentStatsToMax() {
-    chrome.runtime.sendMessage({ type: 'SHIFT_SEND_REPORT' }, (response) => {
-        if (response && response.success) showToast('Статистика отправлена', 'success');
-        else showToast('Ошибка: ' + (response?.error || 'MAX не настроен'), 'error');
-    });
-}
-
-function sendMonthlyStatsToMax() {
-    chrome.runtime.sendMessage({ type: 'SHIFT_SEND_MONTHLY_REPORT' }, (response) => {
-        if (response && response.success) showToast('Отчёт за месяц отправлен', 'success');
-        else showToast('Ошибка: ' + (response?.error || 'MAX не настроен'), 'error');
-    });
-}
-
-export { loadMaxSettings, updateMaxUI, toggleMaxHandler, saveMaxUserId, sendTestMaxMessage, sendCurrentStatsToMax, sendMonthlyStatsToMax };
+export { loadMaxSettings, updateMaxUI, toggleMaxHandler, saveMaxUserId, sendTestMaxMessage };

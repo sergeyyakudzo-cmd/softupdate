@@ -118,6 +118,26 @@ const shiftTracker = {
             .catch(err => { logger.error('🔧 ShiftTracker: Ошибка сохранения файла смены:', err); URL.revokeObjectURL(url); });
     },
 
+    archiveShift(shift) {
+        if (!shift?.date || !shift.hourlyClassification) return;
+        const snapshot = {
+            date: shift.date,
+            classificationTotal: shift.classificationTotal || 0,
+            groupTotal: shift.groupTotal || 0,
+            totalUnique: shift.totalUnique || 0,
+            peakClassification: shift.peakClassification || 0,
+            peakClassificationTime: shift.peakClassificationTime || null,
+            hourlyClassification: shift.hourlyClassification || Array(24).fill(0),
+            hourlyGroup: shift.hourlyGroup || Array(24).fill(0)
+        };
+        chrome.storage.local.get(['shiftsArchive'], (result) => {
+            const arch = result.shiftsArchive || {};
+            arch[shift.date] = snapshot;
+            chrome.storage.local.set({ shiftsArchive: arch })
+                .catch(err => logger.error('🔧 ShiftTracker: Ошибка сохранения shiftsArchive:', err));
+        });
+    },
+
     _handleDownloadChanged(delta) {
         if (delta.state) {
             if (delta.state.current === 'complete') logger.log('🔧 ShiftTracker: Download completed:', delta.id);
@@ -140,6 +160,7 @@ const shiftTracker = {
                         logger.log('🔧 ShiftTracker: Смена изменилась, сохраняем статистику');
                         monthlyStats.addShift(result.shiftData);
                         this.saveShiftToFile(result.shiftData);
+                        this.archiveShift(result.shiftData);
                         this.sendDailyReport(result.shiftData);
                         chrome.alarms.clear('dailyReport');
                         setReportHandled(true);

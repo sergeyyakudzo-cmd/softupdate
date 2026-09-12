@@ -2,7 +2,7 @@ import js from '@eslint/js';
 import prettier from 'eslint-config-prettier';
 
 export default [
-    { ignores: ['dist/', 'node_modules/'] },
+    { ignores: ['dist/', 'node_modules/', 'report/'] },
     js.configs.recommended,
     prettier,
     {
@@ -50,6 +50,10 @@ export default [
                 require: 'readonly',
                 module: 'readonly',
                 __dirname: 'readonly',
+                Chart: 'readonly',
+                requestAnimationFrame: 'readonly',
+                cancelAnimationFrame: 'readonly',
+                matchMedia: 'readonly',
             },
         },
         rules: {

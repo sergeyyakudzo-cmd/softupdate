@@ -60,7 +60,6 @@ function loadSettings() {
             if (elements.groupVolumeValue) elements.groupVolumeValue.textContent = state.groupVolume + '%';
             if (elements.voiceVolumeValueModal) elements.voiceVolumeValueModal.textContent = state.voiceVolume + '%';
 
-            state.isSoundEnabled = false;
             updateSoundToggle();
             updateGroupMonitoringToggle();
             updateCurrentIntervalsDisplay();

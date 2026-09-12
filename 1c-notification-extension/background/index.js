@@ -23,6 +23,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         if (reportShift) {
             monthlyStats.addShift(reportShift);
             shiftTracker.saveShiftToFile(reportShift);
+            shiftTracker.archiveShift(reportShift);
             shiftTracker.sendDailyReport(reportShift);
         }
         scheduleDailyReport();
